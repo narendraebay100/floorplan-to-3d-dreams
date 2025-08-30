@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Upload, File, X, CheckCircle, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
+import { useFloorPlan } from "@/contexts/FloorPlanContext";
 
 interface FileWithPreview extends File {
   preview?: string;
@@ -12,7 +13,7 @@ interface FileWithPreview extends File {
 
 export const FileUploadSection = () => {
   const [files, setFiles] = useState<FileWithPreview[]>([]);
-  const [uploading, setUploading] = useState(false);
+  const { generateFloorPlan, isGenerating } = useFloorPlan();
 
   const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: any[]) => {
     // Handle rejected files
@@ -64,14 +65,17 @@ export const FileUploadSection = () => {
       return;
     }
 
-    setUploading(true);
-    toast.loading("Processing floor plans...");
+    const loadingToast = toast.loading("Analyzing floor plan and generating 3D model...");
 
-    // Simulate processing
-    setTimeout(() => {
-      setUploading(false);
-      toast.success("Floor plans processed successfully! Generating 3D model...");
-    }, 3000);
+    try {
+      await generateFloorPlan(files);
+      toast.dismiss(loadingToast);
+      toast.success("3D model generated successfully! Scroll down to view.");
+    } catch (error) {
+      toast.dismiss(loadingToast);
+      toast.error("Failed to generate 3D model. Please try again.");
+      console.error("Floor plan generation error:", error);
+    }
   };
 
   const formatFileSize = (bytes: number) => {
@@ -198,13 +202,13 @@ export const FileUploadSection = () => {
               variant="architectural" 
               size="lg" 
               onClick={processFiles}
-              disabled={uploading}
+              disabled={isGenerating}
               className="min-w-48"
             >
-              {uploading ? (
+              {isGenerating ? (
                 <>
                   <div className="animate-spin rounded-full h-5 w-5 border-2 border-current border-t-transparent mr-2" />
-                  Processing...
+                  Generating 3D Model...
                 </>
               ) : (
                 <>

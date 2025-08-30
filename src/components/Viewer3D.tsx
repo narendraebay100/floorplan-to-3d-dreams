@@ -4,6 +4,8 @@ import { OrbitControls, PerspectiveCamera, Grid, Environment } from "@react-thre
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, ZoomIn, ZoomOut, Maximize } from "lucide-react";
+import { Generated3DModel } from "@/components/Generated3DModel";
+import { useFloorPlan } from "@/contexts/FloorPlanContext";
 import * as THREE from "three";
 
 // Simple house structure for demo
@@ -115,13 +117,15 @@ const Scene = () => {
         fadeStrength={1}
       />
       
-      {/* 3D House */}
-      <HouseStructure />
+      {/* Generated 3D Model */}
+      <Generated3DModel />
     </>
   );
 };
 
 export const Viewer3D = () => {
+  const { currentFloorPlan, isGenerating } = useFloorPlan();
+  
   return (
     <section className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-6">
@@ -130,8 +134,10 @@ export const Viewer3D = () => {
             Interactive 3D Visualization
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Explore your floor plan in stunning 3D. Navigate, measure, and visualize your space 
-            with professional-grade tools.
+            {currentFloorPlan 
+              ? `Exploring: ${currentFloorPlan.name}` 
+              : "Upload a floor plan above to generate your 3D model"
+            }
           </p>
         </div>
 
@@ -166,10 +172,12 @@ export const Viewer3D = () => {
             </Canvas>
             
             {/* Loading overlay */}
-            <div className="absolute inset-0 bg-background/50 backdrop-blur-sm flex items-center justify-center pointer-events-none opacity-0 transition-opacity">
+            <div className={`absolute inset-0 bg-background/50 backdrop-blur-sm flex items-center justify-center pointer-events-none transition-opacity ${
+              isGenerating ? 'opacity-100' : 'opacity-0'
+            }`}>
               <div className="text-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent mx-auto mb-2" />
-                <p className="text-sm text-muted-foreground">Loading 3D model...</p>
+                <p className="text-sm text-muted-foreground">Generating 3D model...</p>
               </div>
             </div>
           </div>
