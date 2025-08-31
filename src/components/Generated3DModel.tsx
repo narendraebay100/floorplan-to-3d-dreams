@@ -333,44 +333,69 @@ const DefaultHouse = () => {
     <group ref={meshRef}>
       {/* Floor */}
       <mesh position={[0, -0.1, 0]} receiveShadow>
-        <boxGeometry args={[8, 0.2, 6]} />
-        <meshStandardMaterial color="#e2e8f0" />
+        <boxGeometry args={[10, 0.2, 8]} />
+        <meshStandardMaterial color="#94a3b8" roughness={0.8} />
       </mesh>
 
       {/* Walls */}
-      <mesh position={[0, 1.5, -3]} castShadow>
-        <boxGeometry args={[8, 3, 0.2]} />
-        <meshStandardMaterial color="#f8fafc" />
+      <mesh position={[0, 1.5, -4]} castShadow>
+        <boxGeometry args={[10, 3, 0.2]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.9} />
       </mesh>
       
-      <mesh position={[0, 1.5, 3]} castShadow>
-        <boxGeometry args={[8, 3, 0.2]} />
-        <meshStandardMaterial color="#f8fafc" />
+      <mesh position={[0, 1.5, 4]} castShadow>
+        <boxGeometry args={[10, 3, 0.2]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.9} />
       </mesh>
       
-      <mesh position={[-4, 1.5, 0]} castShadow>
-        <boxGeometry args={[0.2, 3, 6]} />
-        <meshStandardMaterial color="#f8fafc" />
+      <mesh position={[-5, 1.5, 0]} castShadow>
+        <boxGeometry args={[0.2, 3, 8]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.9} />
       </mesh>
       
-      <mesh position={[4, 1.5, 0]} castShadow>
-        <boxGeometry args={[0.2, 3, 6]} />
-        <meshStandardMaterial color="#f8fafc" />
+      <mesh position={[5, 1.5, 0]} castShadow>
+        <boxGeometry args={[0.2, 3, 8]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.9} />
       </mesh>
 
       {/* Roof */}
-      <mesh position={[0, 3.5, 0]} castShadow>
-        <coneGeometry args={[5, 1.5, 4]} />
-        <meshStandardMaterial color="#64748b" />
+      <mesh position={[0, 3.8, 0]} castShadow>
+        <coneGeometry args={[6, 2, 4]} />
+        <meshStandardMaterial color="#dc2626" roughness={0.6} />
+      </mesh>
+
+      {/* Interior dividing walls */}
+      <mesh position={[0, 1.5, 0]} castShadow>
+        <boxGeometry args={[0.15, 3, 5]} />
+        <meshStandardMaterial color="#e2e8f0" roughness={0.8} />
+      </mesh>
+      
+      <mesh position={[-2.5, 1.5, 1.5]} castShadow>
+        <boxGeometry args={[5, 3, 0.15]} />
+        <meshStandardMaterial color="#e2e8f0" roughness={0.8} />
+      </mesh>
+
+      {/* Add some furniture for visual interest */}
+      {/* Living room sofa */}
+      <mesh position={[-2, 0.3, -1.5]} castShadow>
+        <boxGeometry args={[2, 0.6, 1]} />
+        <meshStandardMaterial color="#4338ca" roughness={0.8} />
+      </mesh>
+
+      {/* Kitchen counter */}
+      <mesh position={[2.5, 0.4, 2]} castShadow>
+        <boxGeometry args={[3, 0.8, 0.8]} />
+        <meshStandardMaterial color="#8b5cf6" roughness={0.3} />
       </mesh>
 
       {/* Demo label */}
       <Text
         position={[0, 5, 0]}
-        fontSize={0.4}
-        color="#94a3b8"
+        fontSize={0.6}
+        color="#1f2937"
         anchorX="center"
         anchorY="middle"
+        font="https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff"
       >
         Upload floor plan to generate 3D model
       </Text>

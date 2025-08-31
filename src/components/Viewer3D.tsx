@@ -74,25 +74,26 @@ const HouseStructure = () => {
 const Scene = () => {
   return (
     <>
-      <PerspectiveCamera makeDefault position={[10, 8, 10]} fov={60} />
+      <PerspectiveCamera makeDefault position={[8, 6, 8]} fov={75} />
       <OrbitControls 
         enablePan={true}
         enableZoom={true}
         enableRotate={true}
-        minDistance={5}
-        maxDistance={50}
+        minDistance={3}
+        maxDistance={30}
         minPolarAngle={0}
-        maxPolarAngle={Math.PI / 2}
+        maxPolarAngle={Math.PI / 2.2}
+        target={[0, 1, 0]}
       />
       
       {/* Enhanced Lighting */}
-      <ambientLight intensity={0.3} />
+      <ambientLight intensity={0.6} />
       <directionalLight 
         position={[10, 10, 5]} 
-        intensity={0.8}
+        intensity={1.2}
         castShadow
-        shadow-mapSize-width={4096}
-        shadow-mapSize-height={4096}
+        shadow-mapSize-width={2048}
+        shadow-mapSize-height={2048}
         shadow-camera-far={50}
         shadow-camera-left={-20}
         shadow-camera-right={20}
@@ -100,21 +101,21 @@ const Scene = () => {
         shadow-camera-bottom={-20}
       />
       
-      {/* Additional warm lighting for realism */}
+      {/* Additional lighting for better visibility */}
       <pointLight 
-        position={[5, 3, 5]} 
-        intensity={0.4} 
-        color="#fff5e6"
-        distance={20}
-        decay={2}
+        position={[0, 10, 0]} 
+        intensity={0.8} 
+        color="#ffffff"
+        distance={30}
+        decay={1}
       />
       
       <pointLight 
-        position={[-5, 3, -5]} 
-        intensity={0.3} 
-        color="#e6f3ff"
-        distance={15}
-        decay={2}
+        position={[-10, 5, 10]} 
+        intensity={0.5} 
+        color="#ffffff"
+        distance={25}
+        decay={1}
       />
       
       {/* Simple background color instead of HDR environment */}
