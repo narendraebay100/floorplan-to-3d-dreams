@@ -1,6 +1,6 @@
 import { Suspense, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, PerspectiveCamera, Grid, Environment } from "@react-three/drei";
+import { OrbitControls, PerspectiveCamera, Grid } from "@react-three/drei";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, ZoomIn, ZoomOut, Maximize } from "lucide-react";
@@ -117,8 +117,8 @@ const Scene = () => {
         decay={2}
       />
       
-      {/* Environment */}
-      <Environment preset="apartment" />
+      {/* Simple background color instead of HDR environment */}
+      <color attach="background" args={['#f1f5f9']} />
       
       {/* Grid */}
       <Grid 

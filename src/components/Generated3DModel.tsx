@@ -140,7 +140,7 @@ const Room3D = ({ room, scale }: { room: any; scale: number }) => {
         anchorX="center"
         anchorY="middle"
         rotation={[-Math.PI / 2, 0, 0]}
-        font="/fonts/Inter-Bold.woff"
+        font="https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff"
       >
         {room.name}
       </Text>
