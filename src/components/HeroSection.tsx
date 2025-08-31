@@ -31,13 +31,13 @@ export const HeroSection = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
-            <Button variant="hero" size="lg" className="group">
+            <Button variant="hero" size="lg" className="group" onClick={() => { const el = document.getElementById('upload'); if (el) { const top = el.getBoundingClientRect().top + window.scrollY - 16; window.scrollTo({ top, behavior: 'smooth' }); } }}>
               <Upload className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
               Upload Floor Plan
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
             
-            <Button variant="heroSecondary" size="lg" className="group">
+            <Button variant="heroSecondary" size="lg" className="group" onClick={() => { const el = document.getElementById('viewer-3d'); if (el) { const top = el.getBoundingClientRect().top + window.scrollY - 16; window.scrollTo({ top, behavior: 'smooth' }); } }}>
               <Eye className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
               View Demo
             </Button>
