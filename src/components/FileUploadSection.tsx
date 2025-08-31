@@ -70,7 +70,10 @@ export const FileUploadSection = () => {
     try {
       await generateFloorPlan(files);
       toast.dismiss(loadingToast);
-      toast.success("3D model generated successfully! Scroll down to view.");
+      toast.success("3D model generated! Opening 3D viewer...");
+      setTimeout(() => {
+        document.getElementById('viewer-3d')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
     } catch (error) {
       toast.dismiss(loadingToast);
       toast.error("Failed to generate 3D model. Please try again.");

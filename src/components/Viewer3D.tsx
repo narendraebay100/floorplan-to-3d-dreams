@@ -145,7 +145,7 @@ export const Viewer3D = () => {
   const { currentFloorPlan, isGenerating } = useFloorPlan();
   
   return (
-    <section className="py-20 bg-background">
+    <section id="viewer-3d" className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-foreground mb-4">
