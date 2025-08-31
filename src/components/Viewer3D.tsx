@@ -85,19 +85,36 @@ const Scene = () => {
         maxPolarAngle={Math.PI / 2}
       />
       
-      {/* Lighting */}
-      <ambientLight intensity={0.4} />
+      {/* Enhanced Lighting */}
+      <ambientLight intensity={0.3} />
       <directionalLight 
         position={[10, 10, 5]} 
-        intensity={1}
+        intensity={0.8}
         castShadow
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
+        shadow-mapSize-width={4096}
+        shadow-mapSize-height={4096}
         shadow-camera-far={50}
         shadow-camera-left={-20}
         shadow-camera-right={20}
         shadow-camera-top={20}
         shadow-camera-bottom={-20}
+      />
+      
+      {/* Additional warm lighting for realism */}
+      <pointLight 
+        position={[5, 3, 5]} 
+        intensity={0.4} 
+        color="#fff5e6"
+        distance={20}
+        decay={2}
+      />
+      
+      <pointLight 
+        position={[-5, 3, -5]} 
+        intensity={0.3} 
+        color="#e6f3ff"
+        distance={15}
+        decay={2}
       />
       
       {/* Environment */}

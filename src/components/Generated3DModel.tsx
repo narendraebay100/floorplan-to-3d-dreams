@@ -68,7 +68,11 @@ const Wall3D = ({ wall, scale }: { wall: any; scale: number }) => {
       receiveShadow
     >
       <boxGeometry args={[length, wall.height, wall.thickness]} />
-      <meshStandardMaterial color="#f1f5f9" />
+      <meshStandardMaterial 
+        color="#f8fafc" 
+        roughness={0.9}
+        metalness={0.0}
+      />
     </mesh>
   );
 };
@@ -80,36 +84,238 @@ const Room3D = ({ room, scale }: { room: any; scale: number }) => {
   const width = room.bounds.width / scale;
   const depth = room.bounds.height / scale;
   
-  // Room type colors
-  const roomColors = {
-    living: '#e0f2fe',
-    bedroom: '#fce7f3',
-    kitchen: '#ecfdf5',
-    bathroom: '#fff7ed',
-    hallway: '#f8fafc',
-    other: '#f1f5f9'
+  // Enhanced room materials
+  const roomMaterials = {
+    living: { 
+      floor: '#8B4513', // Wood floor
+      wall: '#F5F5DC'   // Beige walls
+    },
+    bedroom: { 
+      floor: '#D2691E', // Carpet
+      wall: '#E6E6FA'   // Lavender walls
+    },
+    kitchen: { 
+      floor: '#696969', // Tile floor
+      wall: '#FFFFFF'   // White walls
+    },
+    bathroom: { 
+      floor: '#708090', // Slate tile
+      wall: '#F0F8FF'   // Alice blue walls
+    },
+    hallway: { 
+      floor: '#BC8F8F', // Rosy brown
+      wall: '#F8F8FF'   // Ghost white
+    },
+    other: { 
+      floor: '#D3D3D3', 
+      wall: '#DCDCDC' 
+    }
   };
+  
+  const materials = roomMaterials[room.type] || roomMaterials.other;
   
   return (
     <>
-      {/* Floor */}
+      {/* Enhanced Floor with realistic texture */}
       <mesh position={[x, -0.01, z]} receiveShadow>
         <boxGeometry args={[width, 0.02, depth]} />
-        <meshStandardMaterial color={roomColors[room.type] || roomColors.other} />
+        <meshStandardMaterial 
+          color={materials.floor} 
+          roughness={room.type === 'kitchen' || room.type === 'bathroom' ? 0.1 : 0.8}
+          metalness={room.type === 'kitchen' || room.type === 'bathroom' ? 0.2 : 0.0}
+        />
       </mesh>
+      
+      {/* Room-specific furniture and details */}
+      {room.type === 'living' && <LivingRoomFurniture position={[x, 0, z]} roomSize={[width, depth]} />}
+      {room.type === 'bedroom' && <BedroomFurniture position={[x, 0, z]} roomSize={[width, depth]} />}
+      {room.type === 'kitchen' && <KitchenFurniture position={[x, 0, z]} roomSize={[width, depth]} />}
+      {room.type === 'bathroom' && <BathroomFurniture position={[x, 0, z]} roomSize={[width, depth]} />}
       
       {/* Room label */}
       <Text
         position={[x, 0.1, z]}
-        fontSize={Math.min(width, depth) * 0.2}
-        color="#64748b"
+        fontSize={Math.min(width, depth) * 0.15}
+        color="#2c3e50"
         anchorX="center"
         anchorY="middle"
         rotation={[-Math.PI / 2, 0, 0]}
+        font="/fonts/Inter-Bold.woff"
       >
         {room.name}
       </Text>
     </>
+  );
+};
+
+// Living Room Furniture Component
+const LivingRoomFurniture = ({ position, roomSize }: { position: [number, number, number]; roomSize: [number, number] }) => {
+  const [x, y, z] = position;
+  const [width, depth] = roomSize;
+  
+  return (
+    <group>
+      {/* Sofa */}
+      <mesh position={[x - width/4, y + 0.2, z]} castShadow>
+        <boxGeometry args={[width/3, 0.4, 0.8]} />
+        <meshStandardMaterial color="#4a5568" roughness={0.8} />
+      </mesh>
+      
+      {/* Coffee Table */}
+      <mesh position={[x, y + 0.15, z]} castShadow>
+        <boxGeometry args={[0.8, 0.3, 0.5]} />
+        <meshStandardMaterial color="#8B4513" roughness={0.3} />
+      </mesh>
+      
+      {/* TV Stand */}
+      <mesh position={[x + width/3, y + 0.2, z - depth/3]} castShadow>
+        <boxGeometry args={[1.2, 0.4, 0.3]} />
+        <meshStandardMaterial color="#2d3748" roughness={0.7} />
+      </mesh>
+      
+      {/* TV */}
+      <mesh position={[x + width/3, y + 0.6, z - depth/3]} castShadow>
+        <boxGeometry args={[1.0, 0.6, 0.05]} />
+        <meshStandardMaterial color="#1a1a1a" roughness={0.1} metalness={0.8} />
+      </mesh>
+      
+      {/* Side Table */}
+      <mesh position={[x - width/2.5, y + 0.25, z + depth/4]} castShadow>
+        <cylinderGeometry args={[0.2, 0.2, 0.5]} />
+        <meshStandardMaterial color="#8B4513" roughness={0.4} />
+      </mesh>
+    </group>
+  );
+};
+
+// Bedroom Furniture Component
+const BedroomFurniture = ({ position, roomSize }: { position: [number, number, number]; roomSize: [number, number] }) => {
+  const [x, y, z] = position;
+  const [width, depth] = roomSize;
+  
+  return (
+    <group>
+      {/* Bed */}
+      <mesh position={[x, y + 0.15, z - depth/4]} castShadow>
+        <boxGeometry args={[1.4, 0.3, 2.0]} />
+        <meshStandardMaterial color="#e2e8f0" roughness={0.9} />
+      </mesh>
+      
+      {/* Bed Frame */}
+      <mesh position={[x, y + 0.05, z - depth/4]} castShadow>
+        <boxGeometry args={[1.5, 0.1, 2.1]} />
+        <meshStandardMaterial color="#654321" roughness={0.6} />
+      </mesh>
+      
+      {/* Nightstands */}
+      <mesh position={[x - 0.8, y + 0.2, z - depth/4]} castShadow>
+        <boxGeometry args={[0.4, 0.4, 0.4]} />
+        <meshStandardMaterial color="#8B4513" roughness={0.5} />
+      </mesh>
+      
+      <mesh position={[x + 0.8, y + 0.2, z - depth/4]} castShadow>
+        <boxGeometry args={[0.4, 0.4, 0.4]} />
+        <meshStandardMaterial color="#8B4513" roughness={0.5} />
+      </mesh>
+      
+      {/* Dresser */}
+      <mesh position={[x + width/3, y + 0.3, z + depth/3]} castShadow>
+        <boxGeometry args={[1.0, 0.6, 0.4]} />
+        <meshStandardMaterial color="#654321" roughness={0.6} />
+      </mesh>
+      
+      {/* Wardrobe */}
+      <mesh position={[x - width/3, y + 0.8, z + depth/4]} castShadow>
+        <boxGeometry args={[0.6, 1.6, 0.5]} />
+        <meshStandardMaterial color="#4a5568" roughness={0.7} />
+      </mesh>
+    </group>
+  );
+};
+
+// Kitchen Furniture Component
+const KitchenFurniture = ({ position, roomSize }: { position: [number, number, number]; roomSize: [number, number] }) => {
+  const [x, y, z] = position;
+  const [width, depth] = roomSize;
+  
+  return (
+    <group>
+      {/* Kitchen Counters */}
+      <mesh position={[x - width/3, y + 0.4, z - depth/3]} castShadow>
+        <boxGeometry args={[width/2, 0.8, 0.6]} />
+        <meshStandardMaterial color="#f7fafc" roughness={0.1} metalness={0.1} />
+      </mesh>
+      
+      {/* Island */}
+      <mesh position={[x, y + 0.4, z]} castShadow>
+        <boxGeometry args={[1.2, 0.8, 0.8]} />
+        <meshStandardMaterial color="#e2e8f0" roughness={0.2} />
+      </mesh>
+      
+      {/* Refrigerator */}
+      <mesh position={[x + width/3, y + 0.8, z - depth/3]} castShadow>
+        <boxGeometry args={[0.6, 1.6, 0.6]} />
+        <meshStandardMaterial color="#f8f9fa" roughness={0.1} metalness={0.3} />
+      </mesh>
+      
+      {/* Stove */}
+      <mesh position={[x - width/4, y + 0.45, z - depth/3]} castShadow>
+        <boxGeometry args={[0.6, 0.1, 0.6]} />
+        <meshStandardMaterial color="#1a1a1a" roughness={0.1} metalness={0.8} />
+      </mesh>
+      
+      {/* Upper Cabinets */}
+      <mesh position={[x - width/3, y + 1.2, z - depth/3]} castShadow>
+        <boxGeometry args={[width/2, 0.6, 0.3]} />
+        <meshStandardMaterial color="#8B4513" roughness={0.4} />
+      </mesh>
+      
+      {/* Sink */}
+      <mesh position={[x - width/5, y + 0.42, z - depth/3]} castShadow>
+        <boxGeometry args={[0.4, 0.04, 0.3]} />
+        <meshStandardMaterial color="#c0c0c0" roughness={0.1} metalness={0.9} />
+      </mesh>
+    </group>
+  );
+};
+
+// Bathroom Furniture Component
+const BathroomFurniture = ({ position, roomSize }: { position: [number, number, number]; roomSize: [number, number] }) => {
+  const [x, y, z] = position;
+  const [width, depth] = roomSize;
+  
+  return (
+    <group>
+      {/* Bathtub/Shower */}
+      <mesh position={[x - width/3, y + 0.15, z]} castShadow>
+        <boxGeometry args={[1.5, 0.3, 0.7]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.1} />
+      </mesh>
+      
+      {/* Toilet */}
+      <mesh position={[x + width/4, y + 0.2, z + depth/4]} castShadow>
+        <boxGeometry args={[0.4, 0.4, 0.6]} />
+        <meshStandardMaterial color="#f8f9fa" roughness={0.2} />
+      </mesh>
+      
+      {/* Vanity */}
+      <mesh position={[x, y + 0.3, z - depth/3]} castShadow>
+        <boxGeometry args={[1.0, 0.6, 0.5]} />
+        <meshStandardMaterial color="#8B4513" roughness={0.5} />
+      </mesh>
+      
+      {/* Mirror */}
+      <mesh position={[x, y + 0.8, z - depth/2.8]} castShadow>
+        <boxGeometry args={[0.8, 0.6, 0.02]} />
+        <meshStandardMaterial color="#e6f3ff" roughness={0.0} metalness={1.0} />
+      </mesh>
+      
+      {/* Sink */}
+      <mesh position={[x, y + 0.32, z - depth/3]} castShadow>
+        <cylinderGeometry args={[0.15, 0.15, 0.04]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.1} />
+      </mesh>
+    </group>
   );
 };
 
