@@ -3,7 +3,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera, Grid } from "@react-three/drei";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download } from "lucide-react";
+import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download, Camera } from "lucide-react";
 import { Generated3DModel } from "@/components/Generated3DModel";
 import { useFloorPlan } from "@/contexts/FloorPlanContext";
 import { exportSceneAsGLB, exportSceneAsGLTF } from "@/lib/exportScene";
@@ -16,12 +16,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// Store scene ref globally so the export button (outside Canvas) can access it
+// Store refs globally so buttons outside Canvas can access them
 let sceneRef: THREE.Scene | null = null;
+let glRef: THREE.WebGLRenderer | null = null;
 
 const SceneCapture = () => {
-  const { scene } = useThree();
+  const { scene, gl } = useThree();
   sceneRef = scene;
+  glRef = gl;
   return null;
 };
 
@@ -111,7 +113,26 @@ export const Viewer3D = () => {
       { loading: 'Exporting GLTF…', success: 'GLTF file downloaded!', error: 'Export failed' }
     );
   }, [currentFloorPlan]);
-  
+
+  const handleScreenshot = useCallback(() => {
+    if (!glRef || !sceneRef) {
+      toast.error("No 3D scene available to capture");
+      return;
+    }
+    try {
+      const canvas = glRef.domElement;
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      const name = currentFloorPlan?.name?.replace(/\.[^/.]+$/, '') || 'floor-plan-3d';
+      link.download = `${name}-screenshot.png`;
+      link.click();
+      toast.success('Screenshot saved!');
+    } catch {
+      toast.error('Failed to capture screenshot');
+    }
+  }, [currentFloorPlan]);
+
   return (
     <section id="viewer-3d" className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-6">
@@ -144,6 +165,10 @@ export const Viewer3D = () => {
             </div>
             
             <div className="flex items-center space-x-2">
+              <Button variant="outline" size="sm" onClick={handleScreenshot}>
+                <Camera className="h-4 w-4 mr-2" />
+                Screenshot
+              </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm">
@@ -172,7 +197,7 @@ export const Viewer3D = () => {
           <div className="h-[600px] relative bg-slate-100">
             <Canvas 
               shadows 
-              gl={{ antialias: true, alpha: false }}
+              gl={{ antialias: true, alpha: false, preserveDrawingBuffer: true }}
               camera={{ position: [8, 6, 8], fov: 75 }}
             >
               <Suspense fallback={null}>
