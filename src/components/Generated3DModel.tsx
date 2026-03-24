@@ -213,10 +213,6 @@ const DimensionLine = ({
   const midY = (start[1] + end[1]) / 2 + 0.05;
   const midZ = (start[2] + end[2]) / 2;
 
-  // Line geometry
-  const points = [new THREE.Vector3(...start), new THREE.Vector3(...end)];
-  const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-
   // Tick marks (small perpendicular lines at each end)
   const tickLen = 0.12;
   const isHorizontal = Math.abs(start[2] - end[2]) < 0.01;
