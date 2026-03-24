@@ -113,7 +113,26 @@ export const Viewer3D = () => {
       { loading: 'Exporting GLTF…', success: 'GLTF file downloaded!', error: 'Export failed' }
     );
   }, [currentFloorPlan]);
-  
+
+  const handleScreenshot = useCallback(() => {
+    if (!glRef || !sceneRef) {
+      toast.error("No 3D scene available to capture");
+      return;
+    }
+    try {
+      const canvas = glRef.domElement;
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      const name = currentFloorPlan?.name?.replace(/\.[^/.]+$/, '') || 'floor-plan-3d';
+      link.download = `${name}-screenshot.png`;
+      link.click();
+      toast.success('Screenshot saved!');
+    } catch {
+      toast.error('Failed to capture screenshot');
+    }
+  }, [currentFloorPlan]);
+
   return (
     <section id="viewer-3d" className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-6">
