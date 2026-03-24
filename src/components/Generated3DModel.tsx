@@ -221,34 +221,25 @@ const DimensionLine = ({
   const tickLen = 0.12;
   const isHorizontal = Math.abs(start[2] - end[2]) < 0.01;
 
-  const tick1Start = isHorizontal
-    ? new THREE.Vector3(start[0], start[1], start[2] - tickLen)
-    : new THREE.Vector3(start[0] - tickLen, start[1], start[2]);
-  const tick1End = isHorizontal
-    ? new THREE.Vector3(start[0], start[1], start[2] + tickLen)
-    : new THREE.Vector3(start[0] + tickLen, start[1], start[2]);
+  const tick1A: [number, number, number] = isHorizontal
+    ? [start[0], start[1], start[2] - tickLen]
+    : [start[0] - tickLen, start[1], start[2]];
+  const tick1B: [number, number, number] = isHorizontal
+    ? [start[0], start[1], start[2] + tickLen]
+    : [start[0] + tickLen, start[1], start[2]];
 
-  const tick2Start = isHorizontal
-    ? new THREE.Vector3(end[0], end[1], end[2] - tickLen)
-    : new THREE.Vector3(end[0] - tickLen, end[1], end[2]);
-  const tick2End = isHorizontal
-    ? new THREE.Vector3(end[0], end[1], end[2] + tickLen)
-    : new THREE.Vector3(end[0] + tickLen, end[1], end[2]);
-
-  const tick1Geo = new THREE.BufferGeometry().setFromPoints([tick1Start, tick1End]);
-  const tick2Geo = new THREE.BufferGeometry().setFromPoints([tick2Start, tick2End]);
+  const tick2A: [number, number, number] = isHorizontal
+    ? [end[0], end[1], end[2] - tickLen]
+    : [end[0] - tickLen, end[1], end[2]];
+  const tick2B: [number, number, number] = isHorizontal
+    ? [end[0], end[1], end[2] + tickLen]
+    : [end[0] + tickLen, end[1], end[2]];
 
   return (
     <group>
-      <line geometry={lineGeometry}>
-        <lineBasicMaterial color="#e74c3c" linewidth={1} />
-      </line>
-      <line geometry={tick1Geo}>
-        <lineBasicMaterial color="#e74c3c" linewidth={1} />
-      </line>
-      <line geometry={tick2Geo}>
-        <lineBasicMaterial color="#e74c3c" linewidth={1} />
-      </line>
+      <Line points={[start, end]} color="#e74c3c" lineWidth={1.5} />
+      <Line points={[tick1A, tick1B]} color="#e74c3c" lineWidth={1.5} />
+      <Line points={[tick2A, tick2B]} color="#e74c3c" lineWidth={1.5} />
 
       <Text
         position={[midX, midY, midZ]}
