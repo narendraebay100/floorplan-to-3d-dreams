@@ -197,7 +197,7 @@ export const Viewer3D = () => {
           <div className="h-[600px] relative bg-slate-100">
             <Canvas 
               shadows 
-              gl={{ antialias: true, alpha: false }}
+              gl={{ antialias: true, alpha: false, preserveDrawingBuffer: true }}
               camera={{ position: [8, 6, 8], fov: 75 }}
             >
               <Suspense fallback={null}>
