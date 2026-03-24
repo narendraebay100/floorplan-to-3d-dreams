@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Text } from '@react-three/drei';
+import { Text, Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { useFloorPlan } from '@/contexts/FloorPlanContext';
 
@@ -144,7 +144,111 @@ const Room3D = ({ room, scale }: { room: any; scale: number }) => {
       >
         {room.name}
       </Text>
+
+      {/* Measurement labels */}
+      <RoomMeasurements x={x} z={z} width={width} depth={depth} />
     </>
+  );
+};
+
+// Measurement lines and dimension labels for a room
+const RoomMeasurements = ({ x, z, width, depth }: { x: number; z: number; width: number; depth: number }) => {
+  const widthM = width.toFixed(1);
+  const depthM = depth.toFixed(1);
+  const areaM = (width * depth).toFixed(1);
+  const labelSize = Math.min(width, depth) * 0.1;
+  const offset = 0.15; // height above floor
+  const lineOffset = 0.25; // how far outside the room the line sits
+
+  return (
+    <group>
+      {/* Width dimension line (front edge) */}
+      <DimensionLine
+        start={[x - width / 2, offset, z + depth / 2 + lineOffset]}
+        end={[x + width / 2, offset, z + depth / 2 + lineOffset]}
+        label={`${widthM} m`}
+        fontSize={labelSize}
+      />
+
+      {/* Depth dimension line (right edge) */}
+      <DimensionLine
+        start={[x + width / 2 + lineOffset, offset, z - depth / 2]}
+        end={[x + width / 2 + lineOffset, offset, z + depth / 2]}
+        label={`${depthM} m`}
+        fontSize={labelSize}
+        rotateLabel
+      />
+
+      {/* Area label on floor */}
+      <Text
+        position={[x, 0.06, z + depth * 0.3]}
+        fontSize={labelSize * 0.8}
+        color="#e74c3c"
+        anchorX="center"
+        anchorY="middle"
+        rotation={[-Math.PI / 2, 0, 0]}
+        font="https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff"
+      >
+        {`${areaM} m²`}
+      </Text>
+    </group>
+  );
+};
+
+// A single dimension line with end ticks and a centered label
+const DimensionLine = ({
+  start,
+  end,
+  label,
+  fontSize,
+  rotateLabel = false,
+}: {
+  start: [number, number, number];
+  end: [number, number, number];
+  label: string;
+  fontSize: number;
+  rotateLabel?: boolean;
+}) => {
+  const midX = (start[0] + end[0]) / 2;
+  const midY = (start[1] + end[1]) / 2 + 0.05;
+  const midZ = (start[2] + end[2]) / 2;
+
+  // Tick marks (small perpendicular lines at each end)
+  const tickLen = 0.12;
+  const isHorizontal = Math.abs(start[2] - end[2]) < 0.01;
+
+  const tick1A: [number, number, number] = isHorizontal
+    ? [start[0], start[1], start[2] - tickLen]
+    : [start[0] - tickLen, start[1], start[2]];
+  const tick1B: [number, number, number] = isHorizontal
+    ? [start[0], start[1], start[2] + tickLen]
+    : [start[0] + tickLen, start[1], start[2]];
+
+  const tick2A: [number, number, number] = isHorizontal
+    ? [end[0], end[1], end[2] - tickLen]
+    : [end[0] - tickLen, end[1], end[2]];
+  const tick2B: [number, number, number] = isHorizontal
+    ? [end[0], end[1], end[2] + tickLen]
+    : [end[0] + tickLen, end[1], end[2]];
+
+  return (
+    <group>
+      <Line points={[start, end]} color="#e74c3c" lineWidth={1.5} />
+      <Line points={[tick1A, tick1B]} color="#e74c3c" lineWidth={1.5} />
+      <Line points={[tick2A, tick2B]} color="#e74c3c" lineWidth={1.5} />
+
+      <Text
+        position={[midX, midY, midZ]}
+        fontSize={fontSize}
+        color="#e74c3c"
+        anchorX="center"
+        anchorY="middle"
+        rotation={rotateLabel ? [-Math.PI / 2, 0, -Math.PI / 2] : [-Math.PI / 2, 0, 0]}
+        font="https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff"
+      >
+        {label}
+      </Text>
+    </group>
   );
 };
 
