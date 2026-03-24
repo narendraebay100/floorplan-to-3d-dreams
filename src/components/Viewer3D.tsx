@@ -1,79 +1,34 @@
-import { Suspense, useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Suspense, useRef, useCallback } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera, Grid } from "@react-three/drei";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, ZoomIn, ZoomOut, Maximize } from "lucide-react";
+import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download } from "lucide-react";
 import { Generated3DModel } from "@/components/Generated3DModel";
 import { useFloorPlan } from "@/contexts/FloorPlanContext";
+import { exportSceneAsGLB, exportSceneAsGLTF } from "@/lib/exportScene";
+import { toast } from "sonner";
 import * as THREE from "three";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-// Simple house structure for demo
-const HouseStructure = () => {
-  const meshRef = useRef<THREE.Group>(null);
+// Store scene ref globally so the export button (outside Canvas) can access it
+let sceneRef: THREE.Scene | null = null;
 
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.1) * 0.1;
-    }
-  });
-
-  return (
-    <group ref={meshRef}>
-      {/* Floor */}
-      <mesh position={[0, -0.1, 0]} receiveShadow>
-        <boxGeometry args={[8, 0.2, 6]} />
-        <meshStandardMaterial color="#e2e8f0" />
-      </mesh>
-
-      {/* Walls */}
-      {/* Front wall */}
-      <mesh position={[0, 1.5, -3]} castShadow>
-        <boxGeometry args={[8, 3, 0.2]} />
-        <meshStandardMaterial color="#f8fafc" />
-      </mesh>
-      
-      {/* Back wall */}
-      <mesh position={[0, 1.5, 3]} castShadow>
-        <boxGeometry args={[8, 3, 0.2]} />
-        <meshStandardMaterial color="#f8fafc" />
-      </mesh>
-      
-      {/* Left wall */}
-      <mesh position={[-4, 1.5, 0]} castShadow>
-        <boxGeometry args={[0.2, 3, 6]} />
-        <meshStandardMaterial color="#f8fafc" />
-      </mesh>
-      
-      {/* Right wall */}
-      <mesh position={[4, 1.5, 0]} castShadow>
-        <boxGeometry args={[0.2, 3, 6]} />
-        <meshStandardMaterial color="#f8fafc" />
-      </mesh>
-
-      {/* Roof */}
-      <mesh position={[0, 3.5, 0]} castShadow>
-        <coneGeometry args={[5, 1.5, 4]} />
-        <meshStandardMaterial color="#64748b" />
-      </mesh>
-
-      {/* Interior dividing walls */}
-      <mesh position={[0, 1.5, 0]} castShadow>
-        <boxGeometry args={[0.1, 3, 4]} />
-        <meshStandardMaterial color="#e2e8f0" />
-      </mesh>
-      
-      <mesh position={[-2, 1.5, 1]} castShadow>
-        <boxGeometry args={[4, 3, 0.1]} />
-        <meshStandardMaterial color="#e2e8f0" />
-      </mesh>
-    </group>
-  );
+const SceneCapture = () => {
+  const { scene } = useThree();
+  sceneRef = scene;
+  return null;
 };
 
 const Scene = () => {
   return (
     <>
+      <SceneCapture />
       <PerspectiveCamera makeDefault position={[8, 6, 8]} fov={75} />
       <OrbitControls 
         enablePan={true}
@@ -101,27 +56,11 @@ const Scene = () => {
         shadow-camera-bottom={-20}
       />
       
-      {/* Additional lighting for better visibility */}
-      <pointLight 
-        position={[0, 10, 0]} 
-        intensity={0.8} 
-        color="#ffffff"
-        distance={30}
-        decay={1}
-      />
+      <pointLight position={[0, 10, 0]} intensity={0.8} color="#ffffff" distance={30} decay={1} />
+      <pointLight position={[-10, 5, 10]} intensity={0.5} color="#ffffff" distance={25} decay={1} />
       
-      <pointLight 
-        position={[-10, 5, 10]} 
-        intensity={0.5} 
-        color="#ffffff"
-        distance={25}
-        decay={1}
-      />
-      
-      {/* Simple background color instead of HDR environment */}
       <color attach="background" args={['#f1f5f9']} />
       
-      {/* Grid */}
       <Grid 
         args={[20, 20]}
         position={[0, -0.2, 0]}
@@ -135,7 +74,6 @@ const Scene = () => {
         fadeStrength={1}
       />
       
-      {/* Generated 3D Model */}
       <Generated3DModel />
     </>
   );
@@ -143,6 +81,36 @@ const Scene = () => {
 
 export const Viewer3D = () => {
   const { currentFloorPlan, isGenerating } = useFloorPlan();
+
+  const handleExportGLB = useCallback(() => {
+    if (!sceneRef) {
+      toast.error("No 3D scene available to export");
+      return;
+    }
+    const name = currentFloorPlan?.name?.replace(/\.[^/.]+$/, '') || 'floor-plan-3d';
+    toast.promise(
+      new Promise<void>((resolve) => {
+        exportSceneAsGLB(sceneRef!, `${name}.glb`);
+        setTimeout(resolve, 500);
+      }),
+      { loading: 'Exporting GLB…', success: 'GLB file downloaded!', error: 'Export failed' }
+    );
+  }, [currentFloorPlan]);
+
+  const handleExportGLTF = useCallback(() => {
+    if (!sceneRef) {
+      toast.error("No 3D scene available to export");
+      return;
+    }
+    const name = currentFloorPlan?.name?.replace(/\.[^/.]+$/, '') || 'floor-plan-3d';
+    toast.promise(
+      new Promise<void>((resolve) => {
+        exportSceneAsGLTF(sceneRef!, `${name}.gltf`);
+        setTimeout(resolve, 500);
+      }),
+      { loading: 'Exporting GLTF…', success: 'GLTF file downloaded!', error: 'Export failed' }
+    );
+  }, [currentFloorPlan]);
   
   return (
     <section id="viewer-3d" className="py-20 bg-background">
@@ -175,10 +143,29 @@ export const Viewer3D = () => {
               </Button>
             </div>
             
-            <Button variant="outline" size="sm">
-              <Maximize className="h-4 w-4 mr-2" />
-              Fullscreen
-            </Button>
+            <div className="flex items-center space-x-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <Download className="h-4 w-4 mr-2" />
+                    Export 3D
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={handleExportGLB}>
+                    Export as GLB (binary)
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleExportGLTF}>
+                    Export as GLTF (JSON)
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <Button variant="outline" size="sm">
+                <Maximize className="h-4 w-4 mr-2" />
+                Fullscreen
+              </Button>
+            </div>
           </div>
 
           {/* 3D Canvas */}
