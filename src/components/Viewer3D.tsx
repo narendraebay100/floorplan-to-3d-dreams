@@ -16,12 +16,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// Store scene ref globally so the export button (outside Canvas) can access it
+// Store refs globally so buttons outside Canvas can access them
 let sceneRef: THREE.Scene | null = null;
+let glRef: THREE.WebGLRenderer | null = null;
 
 const SceneCapture = () => {
-  const { scene } = useThree();
+  const { scene, gl } = useThree();
   sceneRef = scene;
+  glRef = gl;
   return null;
 };
 
