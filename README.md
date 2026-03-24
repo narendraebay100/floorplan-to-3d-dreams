@@ -1,73 +1,112 @@
-# Welcome to your Lovable project
+# 🏠 FloorPlan to 3D — Interactive Floor Plan Visualizer
 
-## Project info
+Transform your 2D floor plans into stunning, interactive 3D visualizations. Built for architects, designers, and real estate professionals.
 
-**URL**: https://lovable.dev/projects/6d82dc06-a330-40cc-aa26-79ecccd2cef3
+![Floor Plan to 3D](https://img.shields.io/badge/Status-Active-brightgreen) ![React](https://img.shields.io/badge/React-18-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Three.js](https://img.shields.io/badge/Three.js-0.160-black)
 
-## How can I edit this code?
+## ✨ Features
 
-There are several ways of editing your application.
+### 🖼️ Smart Floor Plan Upload
+- **Drag & drop** file upload with instant preview
+- Supports **PNG, JPG, SVG, and PDF** formats (up to 10MB each)
+- Multi-file upload with file management (add/remove)
+- Real-time upload status and validation feedback
 
-**Use Lovable**
+### 🏗️ Automatic 2D-to-3D Conversion
+- **Edge detection** algorithm analyzes uploaded floor plan images
+- Automatically detects **horizontal and vertical walls** from pixel data
+- Groups detected walls into logical **room segments** (Living Room, Kitchen, Bedroom, etc.)
+- Configurable scale (pixels-per-meter) for accurate dimensions
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/6d82dc06-a330-40cc-aa26-79ecccd2cef3) and start prompting.
+### 🎮 Interactive 3D Visualization
+- **Real-time 3D rendering** powered by Three.js and React Three Fiber
+- **Orbit controls** — rotate, zoom, and pan the 3D model freely
+- Shadow mapping for realistic depth and lighting
+- Responsive grid floor for spatial reference
+- Smooth auto-scroll to the 3D viewer after model generation
 
-Changes made via Lovable will be committed automatically to this repo.
+### 🪑 Room-Specific Furniture & Details
+- **Living Room** — Sofa, coffee table, TV stand, TV, side table
+- **Bedroom** — Bed with frame, nightstands, dresser, wardrobe
+- **Kitchen** — Counters, island, refrigerator, stove, upper cabinets, sink
+- **Bathroom** — Bathtub/shower, toilet, vanity, mirror, sink
+- Realistic material properties (roughness, metalness) per item
 
-**Use your preferred IDE**
+### 🎨 Professional UI/UX
+- Hero section with animated feature highlights
+- Architectural design system with custom color tokens (light & dark mode)
+- Toast notifications for upload, processing, and error states
+- Responsive layout for desktop and mobile
+- Loading overlays and smooth transitions
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 🏠 Demo Mode
+- Default 3D house model displayed before any upload
+- Includes interior walls, roof, and sample furniture
+- Gentle breathing animation for visual polish
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🛠️ Tech Stack
 
-Follow these steps:
+| Category | Technology |
+|---|---|
+| **Framework** | [React 18](https://react.dev/) |
+| **Language** | [TypeScript 5](https://www.typescriptlang.org/) |
+| **Build Tool** | [Vite 5](https://vitejs.dev/) |
+| **3D Engine** | [Three.js 0.160](https://threejs.org/) |
+| **3D React Bindings** | [React Three Fiber](https://docs.pmnd.rs/react-three-fiber) + [Drei](https://github.com/pmndrs/drei) |
+| **Styling** | [Tailwind CSS 3](https://tailwindcss.com/) |
+| **UI Components** | [shadcn/ui](https://ui.shadcn.com/) (Radix UI primitives) |
+| **File Upload** | [react-dropzone](https://react-dropzone.js.org/) |
+| **Routing** | [React Router 6](https://reactrouter.com/) |
+| **State Management** | React Context API |
+| **Notifications** | [Sonner](https://sonner.emilkowal.dev/) |
+| **Icons** | [Lucide React](https://lucide.dev/) |
+| **Data Fetching** | [TanStack React Query](https://tanstack.com/query) |
+| **Charts** | [Recharts](https://recharts.org/) |
+| **Animations** | Tailwind CSS Animate + CSS custom transitions |
+
+## 🚀 Getting Started
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
+# Clone the repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+# Navigate to the project
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start the dev server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The app will be available at `http://localhost:5173`.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📁 Project Structure
 
-**Use GitHub Codespaces**
+```
+src/
+├── components/
+│   ├── HeroSection.tsx          # Landing hero with CTAs
+│   ├── FileUploadSection.tsx    # Drag & drop upload UI
+│   ├── Viewer3D.tsx             # 3D canvas & controls
+│   ├── Generated3DModel.tsx     # 3D room/furniture rendering
+│   └── ui/                     # shadcn/ui components
+├── contexts/
+│   └── FloorPlanContext.tsx     # Floor plan state & image analysis
+├── pages/
+│   ├── Index.tsx                # Main page
+│   └── NotFound.tsx             # 404 page
+└── index.css                   # Design system tokens
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🎯 How It Works
 
-## What technologies are used for this project?
+1. **Upload** — Drop a floor plan image onto the upload zone
+2. **Analyze** — The app processes the image using canvas-based edge detection to find walls
+3. **Generate** — Detected walls are grouped into rooms and converted to 3D geometry
+4. **Explore** — Navigate the interactive 3D model with orbit controls
 
-This project is built with:
+## 📄 License
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/6d82dc06-a330-40cc-aa26-79ecccd2cef3) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+This project is open source and available under the [MIT License](LICENSE).
