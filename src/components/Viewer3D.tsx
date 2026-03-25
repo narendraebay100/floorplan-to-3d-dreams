@@ -161,7 +161,7 @@ export const Viewer3D = () => {
           </p>
         </div>
 
-        <Card className="architectural-elevation overflow-hidden">
+        <Card ref={viewerRef} className="architectural-elevation overflow-hidden">
           {/* Controls */}
           <div className="p-4 border-b bg-surface-subtle flex items-center justify-between">
             <div className="flex items-center space-x-2">
