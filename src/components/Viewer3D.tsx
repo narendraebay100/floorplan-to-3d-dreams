@@ -85,6 +85,17 @@ const Scene = ({ showMeasurements }: { showMeasurements: boolean }) => {
 export const Viewer3D = () => {
   const { currentFloorPlan, isGenerating } = useFloorPlan();
   const [showMeasurements, setShowMeasurements] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const viewerRef = useRef<HTMLDivElement>(null);
+
+  const handleFullscreen = useCallback(() => {
+    if (!viewerRef.current) return;
+    if (!document.fullscreenElement) {
+      viewerRef.current.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => toast.error('Fullscreen not supported'));
+    } else {
+      document.exitFullscreen().then(() => setIsFullscreen(false));
+    }
+  }, []);
 
   const handleExportGLB = useCallback(() => {
     if (!sceneRef) {
