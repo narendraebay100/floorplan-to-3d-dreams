@@ -77,7 +77,7 @@ const Wall3D = ({ wall, scale }: { wall: any; scale: number }) => {
   );
 };
 
-const Room3D = ({ room, scale }: { room: any; scale: number }) => {
+const Room3D = ({ room, scale, showMeasurements }: { room: any; scale: number; showMeasurements: boolean }) => {
   // Convert room bounds to 3D coordinates
   const x = (room.bounds.x + room.bounds.width / 2 - 400) / scale;
   const z = (room.bounds.y + room.bounds.height / 2 - 300) / scale;
