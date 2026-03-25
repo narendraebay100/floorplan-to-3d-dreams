@@ -97,6 +97,12 @@ export const Viewer3D = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const handler = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener('fullscreenchange', handler);
+    return () => document.removeEventListener('fullscreenchange', handler);
+  }, []);
+
   const handleExportGLB = useCallback(() => {
     if (!sceneRef) {
       toast.error("No 3D scene available to export");
