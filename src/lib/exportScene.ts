@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
+import { OBJExporter } from 'three/examples/jsm/exporters/OBJExporter.js';
 
 export const exportSceneAsGLB = (scene: THREE.Scene, filename = 'floor-plan-3d.glb') => {
   const exporter = new GLTFExporter();
@@ -42,4 +43,16 @@ export const exportSceneAsGLTF = (scene: THREE.Scene, filename = 'floor-plan-3d.
     },
     { binary: false }
   );
+};
+
+export const exportSceneAsOBJ = (scene: THREE.Scene, filename = 'floor-plan-3d.obj') => {
+  const exporter = new OBJExporter();
+  const result = exporter.parse(scene);
+  const blob = new Blob([result], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
 };

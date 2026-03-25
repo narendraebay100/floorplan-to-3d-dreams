@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download, Camera, Ruler } from "lucide-react";
 import { Generated3DModel } from "@/components/Generated3DModel";
 import { useFloorPlan } from "@/contexts/FloorPlanContext";
-import { exportSceneAsGLB, exportSceneAsGLTF } from "@/lib/exportScene";
+import { exportSceneAsGLB, exportSceneAsGLTF, exportSceneAsOBJ } from "@/lib/exportScene";
 import { toast } from "sonner";
 import * as THREE from "three";
 import { Toggle } from "@/components/ui/toggle";
@@ -133,6 +133,16 @@ export const Viewer3D = () => {
     );
   }, [currentFloorPlan]);
 
+  const handleExportOBJ = useCallback(() => {
+    if (!sceneRef) {
+      toast.error("No 3D scene available to export");
+      return;
+    }
+    const name = currentFloorPlan?.name?.replace(/\.[^/.]+$/, '') || 'floor-plan-3d';
+    exportSceneAsOBJ(sceneRef!, `${name}.obj`);
+    toast.success('OBJ file downloaded!');
+  }, [currentFloorPlan]);
+
   const handleScreenshot = useCallback(() => {
     if (!glRef || !sceneRef) {
       toast.error("No 3D scene available to capture");
@@ -211,6 +221,9 @@ export const Viewer3D = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleExportGLTF}>
                     Export as GLTF (JSON)
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleExportOBJ}>
+                    Export as OBJ (mesh)
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
