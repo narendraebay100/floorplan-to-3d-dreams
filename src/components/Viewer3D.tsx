@@ -9,6 +9,7 @@ import { useFloorPlan } from "@/contexts/FloorPlanContext";
 import { exportSceneAsGLB, exportSceneAsGLTF } from "@/lib/exportScene";
 import { toast } from "sonner";
 import * as THREE from "three";
+import { Toggle } from "@/components/ui/toggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
