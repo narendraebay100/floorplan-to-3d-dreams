@@ -28,7 +28,7 @@ export const Generated3DModel = ({ showMeasurements = true }: { showMeasurements
       
       {/* Generate floors for each room */}
       {currentFloorPlan.rooms.map((room) => (
-        <Room3D key={room.id} room={room} scale={currentFloorPlan.scale} />
+        <Room3D key={room.id} room={room} scale={currentFloorPlan.scale} showMeasurements={showMeasurements} />
       ))}
       
       {/* Floor plan title */}
