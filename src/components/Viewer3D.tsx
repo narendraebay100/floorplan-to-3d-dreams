@@ -133,6 +133,16 @@ export const Viewer3D = () => {
     );
   }, [currentFloorPlan]);
 
+  const handleExportOBJ = useCallback(() => {
+    if (!sceneRef) {
+      toast.error("No 3D scene available to export");
+      return;
+    }
+    const name = currentFloorPlan?.name?.replace(/\.[^/.]+$/, '') || 'floor-plan-3d';
+    exportSceneAsOBJ(sceneRef!, `${name}.obj`);
+    toast.success('OBJ file downloaded!');
+  }, [currentFloorPlan]);
+
   const handleScreenshot = useCallback(() => {
     if (!glRef || !sceneRef) {
       toast.error("No 3D scene available to capture");
