@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
+import { OBJExporter } from 'three/examples/jsm/exporters/OBJExporter.js';
 
 export const exportSceneAsGLB = (scene: THREE.Scene, filename = 'floor-plan-3d.glb') => {
   const exporter = new GLTFExporter();
