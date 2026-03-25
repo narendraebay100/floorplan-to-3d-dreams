@@ -1,14 +1,15 @@
-import { Suspense, useRef, useCallback } from "react";
+import { Suspense, useRef, useCallback, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera, Grid } from "@react-three/drei";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download, Camera } from "lucide-react";
+import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download, Camera, Ruler } from "lucide-react";
 import { Generated3DModel } from "@/components/Generated3DModel";
 import { useFloorPlan } from "@/contexts/FloorPlanContext";
 import { exportSceneAsGLB, exportSceneAsGLTF } from "@/lib/exportScene";
 import { toast } from "sonner";
 import * as THREE from "three";
+import { Toggle } from "@/components/ui/toggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,7 +28,7 @@ const SceneCapture = () => {
   return null;
 };
 
-const Scene = () => {
+const Scene = ({ showMeasurements }: { showMeasurements: boolean }) => {
   return (
     <>
       <SceneCapture />
@@ -76,13 +77,14 @@ const Scene = () => {
         fadeStrength={1}
       />
       
-      <Generated3DModel />
+      <Generated3DModel showMeasurements={showMeasurements} />
     </>
   );
 };
 
 export const Viewer3D = () => {
   const { currentFloorPlan, isGenerating } = useFloorPlan();
+  const [showMeasurements, setShowMeasurements] = useState(true);
 
   const handleExportGLB = useCallback(() => {
     if (!sceneRef) {
@@ -165,6 +167,16 @@ export const Viewer3D = () => {
             </div>
             
             <div className="flex items-center space-x-2">
+              <Toggle
+                size="sm"
+                pressed={showMeasurements}
+                onPressedChange={setShowMeasurements}
+                aria-label="Toggle measurements"
+                className="border border-input"
+              >
+                <Ruler className="h-4 w-4 mr-2" />
+                Measurements
+              </Toggle>
               <Button variant="outline" size="sm" onClick={handleScreenshot}>
                 <Camera className="h-4 w-4 mr-2" />
                 Screenshot
@@ -201,7 +213,7 @@ export const Viewer3D = () => {
               camera={{ position: [8, 6, 8], fov: 75 }}
             >
               <Suspense fallback={null}>
-                <Scene />
+                <Scene showMeasurements={showMeasurements} />
               </Suspense>
             </Canvas>
             

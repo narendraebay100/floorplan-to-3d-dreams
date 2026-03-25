@@ -4,7 +4,7 @@ import { Text, Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { useFloorPlan } from '@/contexts/FloorPlanContext';
 
-export const Generated3DModel = () => {
+export const Generated3DModel = ({ showMeasurements = true }: { showMeasurements?: boolean }) => {
   const { currentFloorPlan } = useFloorPlan();
   const groupRef = useRef<THREE.Group>(null);
 
@@ -28,7 +28,7 @@ export const Generated3DModel = () => {
       
       {/* Generate floors for each room */}
       {currentFloorPlan.rooms.map((room) => (
-        <Room3D key={room.id} room={room} scale={currentFloorPlan.scale} />
+        <Room3D key={room.id} room={room} scale={currentFloorPlan.scale} showMeasurements={showMeasurements} />
       ))}
       
       {/* Floor plan title */}
@@ -77,7 +77,7 @@ const Wall3D = ({ wall, scale }: { wall: any; scale: number }) => {
   );
 };
 
-const Room3D = ({ room, scale }: { room: any; scale: number }) => {
+const Room3D = ({ room, scale, showMeasurements }: { room: any; scale: number; showMeasurements: boolean }) => {
   // Convert room bounds to 3D coordinates
   const x = (room.bounds.x + room.bounds.width / 2 - 400) / scale;
   const z = (room.bounds.y + room.bounds.height / 2 - 300) / scale;
@@ -146,7 +146,7 @@ const Room3D = ({ room, scale }: { room: any; scale: number }) => {
       </Text>
 
       {/* Measurement labels */}
-      <RoomMeasurements x={x} z={z} width={width} depth={depth} />
+      {showMeasurements && <RoomMeasurements x={x} z={z} width={width} depth={depth} />}
     </>
   );
 };
