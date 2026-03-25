@@ -213,7 +213,7 @@ export const Viewer3D = () => {
               camera={{ position: [8, 6, 8], fov: 75 }}
             >
               <Suspense fallback={null}>
-                <Scene />
+                <Scene showMeasurements={showMeasurements} />
               </Suspense>
             </Canvas>
             
