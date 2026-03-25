@@ -209,9 +209,9 @@ export const Viewer3D = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={handleFullscreen}>
                 <Maximize className="h-4 w-4 mr-2" />
-                Fullscreen
+                {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
               </Button>
             </div>
           </div>
