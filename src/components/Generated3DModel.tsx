@@ -4,7 +4,7 @@ import { Text, Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { useFloorPlan } from '@/contexts/FloorPlanContext';
 
-export const Generated3DModel = () => {
+export const Generated3DModel = ({ showMeasurements = true }: { showMeasurements?: boolean }) => {
   const { currentFloorPlan } = useFloorPlan();
   const groupRef = useRef<THREE.Group>(null);
 
