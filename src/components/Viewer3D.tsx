@@ -1,4 +1,4 @@
-import { Suspense, useRef, useCallback, useState } from "react";
+import { Suspense, useRef, useCallback, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera, Grid } from "@react-three/drei";
 import { Card } from "@/components/ui/card";
@@ -85,6 +85,23 @@ const Scene = ({ showMeasurements }: { showMeasurements: boolean }) => {
 export const Viewer3D = () => {
   const { currentFloorPlan, isGenerating } = useFloorPlan();
   const [showMeasurements, setShowMeasurements] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const viewerRef = useRef<HTMLDivElement>(null);
+
+  const handleFullscreen = useCallback(() => {
+    if (!viewerRef.current) return;
+    if (!document.fullscreenElement) {
+      viewerRef.current.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => toast.error('Fullscreen not supported'));
+    } else {
+      document.exitFullscreen().then(() => setIsFullscreen(false));
+    }
+  }, []);
+
+  useEffect(() => {
+    const handler = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener('fullscreenchange', handler);
+    return () => document.removeEventListener('fullscreenchange', handler);
+  }, []);
 
   const handleExportGLB = useCallback(() => {
     if (!sceneRef) {
@@ -150,7 +167,7 @@ export const Viewer3D = () => {
           </p>
         </div>
 
-        <Card className="architectural-elevation overflow-hidden">
+        <Card ref={viewerRef} className="architectural-elevation overflow-hidden">
           {/* Controls */}
           <div className="p-4 border-b bg-surface-subtle flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -198,9 +215,9 @@ export const Viewer3D = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={handleFullscreen}>
                 <Maximize className="h-4 w-4 mr-2" />
-                Fullscreen
+                {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
               </Button>
             </div>
           </div>
