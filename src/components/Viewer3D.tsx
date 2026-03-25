@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download, Camera, Ruler } from "lucide-react";
 import { Generated3DModel } from "@/components/Generated3DModel";
 import { useFloorPlan } from "@/contexts/FloorPlanContext";
-import { exportSceneAsGLB, exportSceneAsGLTF } from "@/lib/exportScene";
+import { exportSceneAsGLB, exportSceneAsGLTF, exportSceneAsOBJ } from "@/lib/exportScene";
 import { toast } from "sonner";
 import * as THREE from "three";
 import { Toggle } from "@/components/ui/toggle";
