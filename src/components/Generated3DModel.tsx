@@ -146,7 +146,7 @@ const Room3D = ({ room, scale, showMeasurements }: { room: any; scale: number; s
       </Text>
 
       {/* Measurement labels */}
-      <RoomMeasurements x={x} z={z} width={width} depth={depth} />
+      {showMeasurements && <RoomMeasurements x={x} z={z} width={width} depth={depth} />}
     </>
   );
 };

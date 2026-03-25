@@ -28,7 +28,7 @@ const SceneCapture = () => {
   return null;
 };
 
-const Scene = () => {
+const Scene = ({ showMeasurements }: { showMeasurements: boolean }) => {
   return (
     <>
       <SceneCapture />
@@ -77,7 +77,7 @@ const Scene = () => {
         fadeStrength={1}
       />
       
-      <Generated3DModel />
+      <Generated3DModel showMeasurements={showMeasurements} />
     </>
   );
 };
