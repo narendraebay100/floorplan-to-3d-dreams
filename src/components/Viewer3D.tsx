@@ -212,6 +212,9 @@ export const Viewer3D = () => {
                   <DropdownMenuItem onClick={handleExportGLTF}>
                     Export as GLTF (JSON)
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleExportOBJ}>
+                    Export as OBJ (mesh)
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
