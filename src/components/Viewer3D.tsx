@@ -167,6 +167,16 @@ export const Viewer3D = () => {
             </div>
             
             <div className="flex items-center space-x-2">
+              <Toggle
+                size="sm"
+                pressed={showMeasurements}
+                onPressedChange={setShowMeasurements}
+                aria-label="Toggle measurements"
+                className="border border-input"
+              >
+                <Ruler className="h-4 w-4 mr-2" />
+                Measurements
+              </Toggle>
               <Button variant="outline" size="sm" onClick={handleScreenshot}>
                 <Camera className="h-4 w-4 mr-2" />
                 Screenshot
