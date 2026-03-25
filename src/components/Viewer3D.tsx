@@ -84,6 +84,7 @@ const Scene = () => {
 
 export const Viewer3D = () => {
   const { currentFloorPlan, isGenerating } = useFloorPlan();
+  const [showMeasurements, setShowMeasurements] = useState(true);
 
   const handleExportGLB = useCallback(() => {
     if (!sceneRef) {
