@@ -1,4 +1,4 @@
-import { Suspense, useRef, useCallback } from "react";
+import { Suspense, useRef, useCallback, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera, Grid } from "@react-three/drei";
 import { Card } from "@/components/ui/card";
