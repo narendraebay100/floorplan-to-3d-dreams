@@ -236,26 +236,66 @@ export const Viewer3D = () => {
           </div>
 
           {/* 3D Canvas */}
-          <div className="h-[600px] relative bg-slate-100">
-            <Canvas 
-              shadows 
+          <div className="h-[600px] relative bg-muted/30">
+            {isGenerating ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+                {/* Skeleton layout */}
+                <div className="w-full h-full p-8 flex flex-col items-center justify-center gap-6">
+                  {/* Animated 3D wireframe cube */}
+                  <div className="relative w-32 h-32">
+                    <div className="absolute inset-0 border-2 border-primary/30 rounded-lg animate-pulse" />
+                    <div className="absolute inset-3 border-2 border-primary/50 rounded-md animate-pulse [animation-delay:150ms]" />
+                    <div className="absolute inset-6 border-2 border-primary/70 rounded animate-pulse [animation-delay:300ms]" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-10 h-10 border-[3px] border-primary border-t-transparent rounded-full animate-spin" />
+                    </div>
+                  </div>
+
+                  {/* Progress text */}
+                  <div className="text-center space-y-2">
+                    <p className="text-lg font-semibold text-foreground animate-pulse">
+                      Building your 3D model…
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Analyzing walls, detecting rooms, generating geometry
+                    </p>
+                  </div>
+
+                  {/* Skeleton bars */}
+                  <div className="w-full max-w-md space-y-3 mt-4">
+                    <div className="flex items-center gap-3">
+                      <div className="h-2 flex-1 rounded-full bg-primary/20 overflow-hidden">
+                        <div className="h-full w-3/4 rounded-full bg-primary/60 animate-[shimmer_1.5s_ease-in-out_infinite]" />
+                      </div>
+                      <span className="text-xs text-muted-foreground w-24">Detecting walls</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="h-2 flex-1 rounded-full bg-primary/20 overflow-hidden">
+                        <div className="h-full w-1/2 rounded-full bg-primary/60 animate-[shimmer_1.5s_ease-in-out_infinite_0.3s]" />
+                      </div>
+                      <span className="text-xs text-muted-foreground w-24">Mapping rooms</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="h-2 flex-1 rounded-full bg-primary/20 overflow-hidden">
+                        <div className="h-full w-1/4 rounded-full bg-primary/60 animate-[shimmer_1.5s_ease-in-out_infinite_0.6s]" />
+                      </div>
+                      <span className="text-xs text-muted-foreground w-24">3D generation</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            <Canvas
+              shadows
               gl={{ antialias: true, alpha: false, preserveDrawingBuffer: true }}
               camera={{ position: [8, 6, 8], fov: 75 }}
+              style={{ opacity: isGenerating ? 0.15 : 1, transition: 'opacity 0.5s ease' }}
             >
               <Suspense fallback={null}>
                 <Scene showMeasurements={showMeasurements} />
               </Suspense>
             </Canvas>
-            
-            {/* Loading overlay */}
-            <div className={`absolute inset-0 bg-background/50 backdrop-blur-sm flex items-center justify-center pointer-events-none transition-opacity ${
-              isGenerating ? 'opacity-100' : 'opacity-0'
-            }`}>
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent mx-auto mb-2" />
-                <p className="text-sm text-muted-foreground">Generating 3D model...</p>
-              </div>
-            </div>
           </div>
 
           {/* Info panel */}
