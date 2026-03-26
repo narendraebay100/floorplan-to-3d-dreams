@@ -11,6 +11,7 @@ const Index = () => {
       <FileUploadSection />
       <Viewer3D />
       <Footer />
+      <ScrollToTop />
     </div>
   );
 };
