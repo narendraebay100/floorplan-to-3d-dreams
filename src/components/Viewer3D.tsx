@@ -206,6 +206,16 @@ export const Viewer3D = () => {
                 <Ruler className="h-4 w-4 mr-2" />
                 Measurements
               </Toggle>
+              <Toggle
+                size="sm"
+                pressed={showColorPanel}
+                onPressedChange={setShowColorPanel}
+                aria-label="Toggle color panel"
+                className="border border-input"
+              >
+                <Palette className="h-4 w-4 mr-2" />
+                Colors
+              </Toggle>
               <Button variant="outline" size="sm" onClick={handleScreenshot}>
                 <Camera className="h-4 w-4 mr-2" />
                 Screenshot
