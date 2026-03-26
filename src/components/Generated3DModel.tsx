@@ -2,10 +2,10 @@ import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Text, Line } from '@react-three/drei';
 import * as THREE from 'three';
-import { useFloorPlan } from '@/contexts/FloorPlanContext';
+import { useFloorPlan, RoomColorOverrides } from '@/contexts/FloorPlanContext';
 
 export const Generated3DModel = ({ showMeasurements = true }: { showMeasurements?: boolean }) => {
-  const { currentFloorPlan } = useFloorPlan();
+  const { currentFloorPlan, roomColors } = useFloorPlan();
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
