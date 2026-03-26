@@ -3,13 +3,14 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera, Grid } from "@react-three/drei";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download, Camera, Ruler } from "lucide-react";
+import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download, Camera, Ruler, Palette, ChevronDown, ChevronUp } from "lucide-react";
 import { Generated3DModel } from "@/components/Generated3DModel";
 import { useFloorPlan } from "@/contexts/FloorPlanContext";
 import { exportSceneAsGLB, exportSceneAsGLTF, exportSceneAsOBJ } from "@/lib/exportScene";
 import { toast } from "sonner";
 import * as THREE from "three";
 import { Toggle } from "@/components/ui/toggle";
+import { Label } from "@/components/ui/label";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -82,10 +83,23 @@ const Scene = ({ showMeasurements }: { showMeasurements: boolean }) => {
   );
 };
 
+const defaultRoomColors: Record<string, { floor: string; wall: string }> = {
+  living: { floor: '#8B4513', wall: '#F5F5DC' },
+  bedroom: { floor: '#D2691E', wall: '#E6E6FA' },
+  kitchen: { floor: '#696969', wall: '#FFFFFF' },
+  bathroom: { floor: '#708090', wall: '#F0F8FF' },
+  hallway: { floor: '#BC8F8F', wall: '#F8F8FF' },
+  other: { floor: '#D3D3D3', wall: '#DCDCDC' },
+};
+
+const getDefaultColor = (type: string, part: 'floor' | 'wall') =>
+  (defaultRoomColors[type] || defaultRoomColors.other)[part];
+
 export const Viewer3D = () => {
-  const { currentFloorPlan, isGenerating } = useFloorPlan();
+  const { currentFloorPlan, isGenerating, roomColors, setRoomColors } = useFloorPlan();
   const [showMeasurements, setShowMeasurements] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showColorPanel, setShowColorPanel] = useState(false);
   const viewerRef = useRef<HTMLDivElement>(null);
 
   const handleFullscreen = useCallback(() => {
@@ -204,6 +218,16 @@ export const Viewer3D = () => {
                 <Ruler className="h-4 w-4 mr-2" />
                 Measurements
               </Toggle>
+              <Toggle
+                size="sm"
+                pressed={showColorPanel}
+                onPressedChange={setShowColorPanel}
+                aria-label="Toggle color panel"
+                className="border border-input"
+              >
+                <Palette className="h-4 w-4 mr-2" />
+                Colors
+              </Toggle>
               <Button variant="outline" size="sm" onClick={handleScreenshot}>
                 <Camera className="h-4 w-4 mr-2" />
                 Screenshot
@@ -297,6 +321,62 @@ export const Viewer3D = () => {
               </Suspense>
             </Canvas>
           </div>
+
+          {/* Room Color Customization Panel */}
+          {showColorPanel && currentFloorPlan && (
+            <div className="p-4 border-t bg-muted/30">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                  <Palette className="h-4 w-4 text-primary" />
+                  Room Colors
+                </h4>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setRoomColors({})}
+                  className="text-xs text-muted-foreground"
+                >
+                  Reset All
+                </Button>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {currentFloorPlan.rooms.map((room) => (
+                  <div key={room.id} className="flex items-center gap-3 p-2 rounded-lg bg-background border">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">{room.name}</p>
+                      <p className="text-xs text-muted-foreground capitalize">{room.type}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="text-center">
+                        <Label className="text-[10px] text-muted-foreground">Floor</Label>
+                        <input
+                          type="color"
+                          value={roomColors[room.id]?.floor || getDefaultColor(room.type, 'floor')}
+                          onChange={(e) => setRoomColors(prev => ({
+                            ...prev,
+                            [room.id]: { ...prev[room.id], floor: e.target.value }
+                          }))}
+                          className="block w-8 h-8 rounded cursor-pointer border border-input"
+                        />
+                      </div>
+                      <div className="text-center">
+                        <Label className="text-[10px] text-muted-foreground">Wall</Label>
+                        <input
+                          type="color"
+                          value={roomColors[room.id]?.wall || getDefaultColor(room.type, 'wall')}
+                          onChange={(e) => setRoomColors(prev => ({
+                            ...prev,
+                            [room.id]: { ...prev[room.id], wall: e.target.value }
+                          }))}
+                          className="block w-8 h-8 rounded cursor-pointer border border-input"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Info panel */}
           <div className="p-4 bg-surface-subtle border-t">

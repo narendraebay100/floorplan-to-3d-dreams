@@ -2,10 +2,10 @@ import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Text, Line } from '@react-three/drei';
 import * as THREE from 'three';
-import { useFloorPlan } from '@/contexts/FloorPlanContext';
+import { useFloorPlan, RoomColorOverrides } from '@/contexts/FloorPlanContext';
 
 export const Generated3DModel = ({ showMeasurements = true }: { showMeasurements?: boolean }) => {
-  const { currentFloorPlan } = useFloorPlan();
+  const { currentFloorPlan, roomColors } = useFloorPlan();
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
@@ -28,7 +28,7 @@ export const Generated3DModel = ({ showMeasurements = true }: { showMeasurements
       
       {/* Generate floors for each room */}
       {currentFloorPlan.rooms.map((room) => (
-        <Room3D key={room.id} room={room} scale={currentFloorPlan.scale} showMeasurements={showMeasurements} />
+        <Room3D key={room.id} room={room} scale={currentFloorPlan.scale} showMeasurements={showMeasurements} colorOverride={roomColors[room.id]} />
       ))}
       
       {/* Floor plan title */}
@@ -95,7 +95,7 @@ const roomTypeIcons: Record<string, string> = {
   other: '📦',
 };
 
-const Room3D = ({ room, scale, showMeasurements }: { room: any; scale: number; showMeasurements: boolean }) => {
+const Room3D = ({ room, scale, showMeasurements, colorOverride }: { room: any; scale: number; showMeasurements: boolean; colorOverride?: { floor?: string; wall?: string } }) => {
   // Convert room bounds to 3D coordinates
   const x = (room.bounds.x + room.bounds.width / 2 - 400) / scale;
   const z = (room.bounds.y + room.bounds.height / 2 - 300) / scale;
@@ -103,34 +103,18 @@ const Room3D = ({ room, scale, showMeasurements }: { room: any; scale: number; s
   const depth = room.bounds.height / scale;
   
   // Enhanced room materials
-  const roomMaterials = {
-    living: { 
-      floor: '#8B4513', // Wood floor
-      wall: '#F5F5DC'   // Beige walls
-    },
-    bedroom: { 
-      floor: '#D2691E', // Carpet
-      wall: '#E6E6FA'   // Lavender walls
-    },
-    kitchen: { 
-      floor: '#696969', // Tile floor
-      wall: '#FFFFFF'   // White walls
-    },
-    bathroom: { 
-      floor: '#708090', // Slate tile
-      wall: '#F0F8FF'   // Alice blue walls
-    },
-    hallway: { 
-      floor: '#BC8F8F', // Rosy brown
-      wall: '#F8F8FF'   // Ghost white
-    },
-    other: { 
-      floor: '#D3D3D3', 
-      wall: '#DCDCDC' 
-    }
+  const roomMaterials: Record<string, { floor: string; wall: string }> = {
+    living: { floor: '#8B4513', wall: '#F5F5DC' },
+    bedroom: { floor: '#D2691E', wall: '#E6E6FA' },
+    kitchen: { floor: '#696969', wall: '#FFFFFF' },
+    bathroom: { floor: '#708090', wall: '#F0F8FF' },
+    hallway: { floor: '#BC8F8F', wall: '#F8F8FF' },
+    other: { floor: '#D3D3D3', wall: '#DCDCDC' }
   };
   
-  const materials = roomMaterials[room.type] || roomMaterials.other;
+  const baseMaterials = roomMaterials[room.type] || roomMaterials.other;
+  const floorColor = colorOverride?.floor || baseMaterials.floor;
+  const wallColor = colorOverride?.wall || baseMaterials.wall;
   
   return (
     <>
@@ -138,7 +122,7 @@ const Room3D = ({ room, scale, showMeasurements }: { room: any; scale: number; s
       <mesh position={[x, -0.01, z]} receiveShadow>
         <boxGeometry args={[width, 0.02, depth]} />
         <meshStandardMaterial 
-          color={materials.floor} 
+          color={floorColor} 
           roughness={room.type === 'kitchen' || room.type === 'bathroom' ? 0.1 : 0.8}
           metalness={room.type === 'kitchen' || room.type === 'bathroom' ? 0.2 : 0.0}
         />
