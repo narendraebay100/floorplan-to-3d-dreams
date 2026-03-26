@@ -83,6 +83,18 @@ const Scene = ({ showMeasurements }: { showMeasurements: boolean }) => {
   );
 };
 
+const defaultRoomColors: Record<string, { floor: string; wall: string }> = {
+  living: { floor: '#8B4513', wall: '#F5F5DC' },
+  bedroom: { floor: '#D2691E', wall: '#E6E6FA' },
+  kitchen: { floor: '#696969', wall: '#FFFFFF' },
+  bathroom: { floor: '#708090', wall: '#F0F8FF' },
+  hallway: { floor: '#BC8F8F', wall: '#F8F8FF' },
+  other: { floor: '#D3D3D3', wall: '#DCDCDC' },
+};
+
+const getDefaultColor = (type: string, part: 'floor' | 'wall') =>
+  (defaultRoomColors[type] || defaultRoomColors.other)[part];
+
 export const Viewer3D = () => {
   const { currentFloorPlan, isGenerating, roomColors, setRoomColors } = useFloorPlan();
   const [showMeasurements, setShowMeasurements] = useState(true);
