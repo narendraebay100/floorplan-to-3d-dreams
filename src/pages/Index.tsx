@@ -2,6 +2,7 @@ import { HeroSection } from "@/components/HeroSection";
 import { FileUploadSection } from "@/components/FileUploadSection";
 import { Viewer3D } from "@/components/Viewer3D";
 import { Footer } from "@/components/Footer";
+import { ScrollToTop } from "@/components/ScrollToTop";
 
 const Index = () => {
   return (
@@ -10,6 +11,7 @@ const Index = () => {
       <FileUploadSection />
       <Viewer3D />
       <Footer />
+      <ScrollToTop />
     </div>
   );
 };
