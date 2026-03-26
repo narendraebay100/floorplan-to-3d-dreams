@@ -132,17 +132,41 @@ const Room3D = ({ room, scale, showMeasurements }: { room: any; scale: number; s
       {room.type === 'kitchen' && <KitchenFurniture position={[x, 0, z]} roomSize={[width, depth]} />}
       {room.type === 'bathroom' && <BathroomFurniture position={[x, 0, z]} roomSize={[width, depth]} />}
       
-      {/* Room label */}
+      {/* Room type label background */}
+      <mesh position={[x, 0.02, z - depth * 0.15]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[Math.min(width * 0.8, 2.5), 0.45]} />
+        <meshStandardMaterial color={roomTypeColors[room.type] || '#6b7280'} roughness={0.5} transparent opacity={0.85} />
+      </mesh>
+
+      {/* Room name */}
       <Text
-        position={[x, 0.1, z]}
-        fontSize={Math.min(width, depth) * 0.15}
-        color="#2c3e50"
+        position={[x, 0.03, z - depth * 0.15]}
+        fontSize={Math.min(width, depth) * 0.12}
+        color="#ffffff"
+        anchorX="center"
+        anchorY="middle"
+        rotation={[-Math.PI / 2, 0, 0]}
+        font="https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff"
+        fontWeight={700}
+      >
+        {room.name}
+      </Text>
+
+      {/* Room type tag */}
+      <mesh position={[x, 0.02, z - depth * 0.15 + 0.35]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[Math.min(width * 0.5, 1.5), 0.25]} />
+        <meshStandardMaterial color={roomTypeColors[room.type] || '#6b7280'} roughness={0.5} transparent opacity={0.6} />
+      </mesh>
+      <Text
+        position={[x, 0.03, z - depth * 0.15 + 0.35]}
+        fontSize={Math.min(width, depth) * 0.07}
+        color="#ffffff"
         anchorX="center"
         anchorY="middle"
         rotation={[-Math.PI / 2, 0, 0]}
         font="https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff"
       >
-        {room.name}
+        {roomTypeIcons[room.type] || '📦'} {room.type.charAt(0).toUpperCase() + room.type.slice(1)}
       </Text>
 
       {/* Measurement labels */}
