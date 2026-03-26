@@ -3,13 +3,14 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera, Grid } from "@react-three/drei";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download, Camera, Ruler } from "lucide-react";
+import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download, Camera, Ruler, Palette, ChevronDown, ChevronUp } from "lucide-react";
 import { Generated3DModel } from "@/components/Generated3DModel";
 import { useFloorPlan } from "@/contexts/FloorPlanContext";
 import { exportSceneAsGLB, exportSceneAsGLTF, exportSceneAsOBJ } from "@/lib/exportScene";
 import { toast } from "sonner";
 import * as THREE from "three";
 import { Toggle } from "@/components/ui/toggle";
+import { Label } from "@/components/ui/label";
 import {
   DropdownMenu,
   DropdownMenuContent,
