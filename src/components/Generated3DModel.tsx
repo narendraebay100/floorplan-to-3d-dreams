@@ -122,7 +122,7 @@ const Room3D = ({ room, scale, showMeasurements, colorOverride }: { room: any; s
       <mesh position={[x, -0.01, z]} receiveShadow>
         <boxGeometry args={[width, 0.02, depth]} />
         <meshStandardMaterial 
-          color={materials.floor} 
+          color={floorColor} 
           roughness={room.type === 'kitchen' || room.type === 'bathroom' ? 0.1 : 0.8}
           metalness={room.type === 'kitchen' || room.type === 'bathroom' ? 0.2 : 0.0}
         />
