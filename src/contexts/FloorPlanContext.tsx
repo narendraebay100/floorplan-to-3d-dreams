@@ -94,7 +94,9 @@ export const FloorPlanProvider = ({ children }: { children: ReactNode }) => {
       setCurrentFloorPlan,
       isGenerating,
       setIsGenerating,
-      generateFloorPlan
+      generateFloorPlan,
+      roomColors,
+      setRoomColors
     }}>
       {children}
     </FloorPlanContext.Provider>
