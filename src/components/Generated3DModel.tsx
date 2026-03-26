@@ -77,6 +77,24 @@ const Wall3D = ({ wall, scale }: { wall: any; scale: number }) => {
   );
 };
 
+const roomTypeColors: Record<string, string> = {
+  living: '#2563eb',
+  bedroom: '#7c3aed',
+  kitchen: '#d97706',
+  bathroom: '#0891b2',
+  hallway: '#64748b',
+  other: '#6b7280',
+};
+
+const roomTypeIcons: Record<string, string> = {
+  living: '🛋️',
+  bedroom: '🛏️',
+  kitchen: '🍳',
+  bathroom: '🚿',
+  hallway: '🚪',
+  other: '📦',
+};
+
 const Room3D = ({ room, scale, showMeasurements }: { room: any; scale: number; showMeasurements: boolean }) => {
   // Convert room bounds to 3D coordinates
   const x = (room.bounds.x + room.bounds.width / 2 - 400) / scale;
