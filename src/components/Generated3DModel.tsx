@@ -95,7 +95,7 @@ const roomTypeIcons: Record<string, string> = {
   other: '📦',
 };
 
-const Room3D = ({ room, scale, showMeasurements }: { room: any; scale: number; showMeasurements: boolean }) => {
+const Room3D = ({ room, scale, showMeasurements, colorOverride }: { room: any; scale: number; showMeasurements: boolean; colorOverride?: { floor?: string; wall?: string } }) => {
   // Convert room bounds to 3D coordinates
   const x = (room.bounds.x + room.bounds.width / 2 - 400) / scale;
   const z = (room.bounds.y + room.bounds.height / 2 - 300) / scale;
@@ -103,34 +103,18 @@ const Room3D = ({ room, scale, showMeasurements }: { room: any; scale: number; s
   const depth = room.bounds.height / scale;
   
   // Enhanced room materials
-  const roomMaterials = {
-    living: { 
-      floor: '#8B4513', // Wood floor
-      wall: '#F5F5DC'   // Beige walls
-    },
-    bedroom: { 
-      floor: '#D2691E', // Carpet
-      wall: '#E6E6FA'   // Lavender walls
-    },
-    kitchen: { 
-      floor: '#696969', // Tile floor
-      wall: '#FFFFFF'   // White walls
-    },
-    bathroom: { 
-      floor: '#708090', // Slate tile
-      wall: '#F0F8FF'   // Alice blue walls
-    },
-    hallway: { 
-      floor: '#BC8F8F', // Rosy brown
-      wall: '#F8F8FF'   // Ghost white
-    },
-    other: { 
-      floor: '#D3D3D3', 
-      wall: '#DCDCDC' 
-    }
+  const roomMaterials: Record<string, { floor: string; wall: string }> = {
+    living: { floor: '#8B4513', wall: '#F5F5DC' },
+    bedroom: { floor: '#D2691E', wall: '#E6E6FA' },
+    kitchen: { floor: '#696969', wall: '#FFFFFF' },
+    bathroom: { floor: '#708090', wall: '#F0F8FF' },
+    hallway: { floor: '#BC8F8F', wall: '#F8F8FF' },
+    other: { floor: '#D3D3D3', wall: '#DCDCDC' }
   };
   
-  const materials = roomMaterials[room.type] || roomMaterials.other;
+  const baseMaterials = roomMaterials[room.type] || roomMaterials.other;
+  const floorColor = colorOverride?.floor || baseMaterials.floor;
+  const wallColor = colorOverride?.wall || baseMaterials.wall;
   
   return (
     <>
