@@ -25,12 +25,16 @@ export interface FloorPlan {
   originalImage?: string;
 }
 
+export type RoomColorOverrides = Record<string, { floor?: string; wall?: string }>;
+
 interface FloorPlanContextType {
   currentFloorPlan: FloorPlan | null;
   setCurrentFloorPlan: (plan: FloorPlan | null) => void;
   isGenerating: boolean;
   setIsGenerating: (generating: boolean) => void;
   generateFloorPlan: (files: File[]) => Promise<void>;
+  roomColors: RoomColorOverrides;
+  setRoomColors: React.Dispatch<React.SetStateAction<RoomColorOverrides>>;
 }
 
 const FloorPlanContext = createContext<FloorPlanContextType | undefined>(undefined);
