@@ -84,9 +84,10 @@ const Scene = ({ showMeasurements }: { showMeasurements: boolean }) => {
 };
 
 export const Viewer3D = () => {
-  const { currentFloorPlan, isGenerating } = useFloorPlan();
+  const { currentFloorPlan, isGenerating, roomColors, setRoomColors } = useFloorPlan();
   const [showMeasurements, setShowMeasurements] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showColorPanel, setShowColorPanel] = useState(false);
   const viewerRef = useRef<HTMLDivElement>(null);
 
   const handleFullscreen = useCallback(() => {
