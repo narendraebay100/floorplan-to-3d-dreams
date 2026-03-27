@@ -169,6 +169,19 @@ export const Viewer3D = () => {
   const [showMeasurements, setShowMeasurements] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showColorPanel, setShowColorPanel] = useState(false);
+  const [activeTheme, setActiveTheme] = useState<string | null>(null);
+
+  const applyTheme = useCallback((theme: ColorTheme) => {
+    if (!currentFloorPlan) return;
+    const newColors: Record<string, { floor?: string; wall?: string }> = {};
+    currentFloorPlan.rooms.forEach((room) => {
+      const tc = theme.colors[room.type] || theme.colors.living;
+      newColors[room.id] = { floor: tc.floor, wall: tc.wall };
+    });
+    setRoomColors(newColors);
+    setActiveTheme(theme.name);
+    toast.success(`Applied "${theme.name}" theme`);
+  }, [currentFloorPlan, setRoomColors]);
   const viewerRef = useRef<HTMLDivElement>(null);
 
   const handleFullscreen = useCallback(() => {
