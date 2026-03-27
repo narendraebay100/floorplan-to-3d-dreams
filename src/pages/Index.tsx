@@ -12,6 +12,7 @@ const Index = () => {
       <HeroSection />
       <FileUploadSection />
       <Viewer3D />
+      <FAQSection />
       <ContactSection />
       <Footer />
       <ScrollToTop />
