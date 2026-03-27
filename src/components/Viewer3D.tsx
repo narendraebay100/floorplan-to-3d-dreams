@@ -95,11 +95,93 @@ const defaultRoomColors: Record<string, { floor: string; wall: string }> = {
 const getDefaultColor = (type: string, part: 'floor' | 'wall') =>
   (defaultRoomColors[type] || defaultRoomColors.other)[part];
 
+interface ColorTheme {
+  name: string;
+  description: string;
+  colors: Record<string, { floor: string; wall: string }>;
+}
+
+const presetThemes: ColorTheme[] = [
+  {
+    name: 'Modern',
+    description: 'Clean whites & cool grays',
+    colors: {
+      living: { floor: '#3C3C3C', wall: '#FAFAFA' },
+      bedroom: { floor: '#4A4A4A', wall: '#F0F0F0' },
+      kitchen: { floor: '#2C2C2C', wall: '#FFFFFF' },
+      bathroom: { floor: '#505050', wall: '#E8E8E8' },
+      hallway: { floor: '#383838', wall: '#F5F5F5' },
+      other: { floor: '#444444', wall: '#EEEEEE' },
+    },
+  },
+  {
+    name: 'Rustic',
+    description: 'Warm wood & earthy tones',
+    colors: {
+      living: { floor: '#6B3A2A', wall: '#E8D5B7' },
+      bedroom: { floor: '#7A4B3A', wall: '#F2E0C8' },
+      kitchen: { floor: '#5C2E1E', wall: '#D4B896' },
+      bathroom: { floor: '#8B6F4E', wall: '#EDE0D0' },
+      hallway: { floor: '#6E4530', wall: '#E6D2B5' },
+      other: { floor: '#7B5B3A', wall: '#DFC8A8' },
+    },
+  },
+  {
+    name: 'Scandinavian',
+    description: 'Light birch & soft pastels',
+    colors: {
+      living: { floor: '#C8AD7F', wall: '#FEFEFE' },
+      bedroom: { floor: '#D4BA8A', wall: '#F8F6F0' },
+      kitchen: { floor: '#BFA878', wall: '#FFFFFF' },
+      bathroom: { floor: '#B0C4B1', wall: '#F5F9F6' },
+      hallway: { floor: '#CAAF82', wall: '#FAFAF7' },
+      other: { floor: '#C2A87C', wall: '#F7F5EF' },
+    },
+  },
+  {
+    name: 'Industrial',
+    description: 'Raw concrete & steel accents',
+    colors: {
+      living: { floor: '#5A5A5A', wall: '#9E9E9E' },
+      bedroom: { floor: '#636363', wall: '#A8A8A8' },
+      kitchen: { floor: '#4E4E4E', wall: '#8F8F8F' },
+      bathroom: { floor: '#6B6B6B', wall: '#B0B0B0' },
+      hallway: { floor: '#555555', wall: '#999999' },
+      other: { floor: '#606060', wall: '#A0A0A0' },
+    },
+  },
+  {
+    name: 'Tropical',
+    description: 'Lush greens & sandy neutrals',
+    colors: {
+      living: { floor: '#8B7355', wall: '#F5F0E1' },
+      bedroom: { floor: '#9C8465', wall: '#EDE8D5' },
+      kitchen: { floor: '#7A6348', wall: '#F0EBD8' },
+      bathroom: { floor: '#5F8A6E', wall: '#E8F0EA' },
+      hallway: { floor: '#887050', wall: '#F2ECDD' },
+      other: { floor: '#7E6A4F', wall: '#EEE9D9' },
+    },
+  },
+];
+
 export const Viewer3D = () => {
   const { currentFloorPlan, isGenerating, roomColors, setRoomColors } = useFloorPlan();
   const [showMeasurements, setShowMeasurements] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showColorPanel, setShowColorPanel] = useState(false);
+  const [activeTheme, setActiveTheme] = useState<string | null>(null);
+
+  const applyTheme = useCallback((theme: ColorTheme) => {
+    if (!currentFloorPlan) return;
+    const newColors: Record<string, { floor?: string; wall?: string }> = {};
+    currentFloorPlan.rooms.forEach((room) => {
+      const tc = theme.colors[room.type] || theme.colors.living;
+      newColors[room.id] = { floor: tc.floor, wall: tc.wall };
+    });
+    setRoomColors(newColors);
+    setActiveTheme(theme.name);
+    toast.success(`Applied "${theme.name}" theme`);
+  }, [currentFloorPlan, setRoomColors]);
   const viewerRef = useRef<HTMLDivElement>(null);
 
   const handleFullscreen = useCallback(() => {
@@ -324,56 +406,97 @@ export const Viewer3D = () => {
 
           {/* Room Color Customization Panel */}
           {showColorPanel && currentFloorPlan && (
-            <div className="p-4 border-t bg-muted/30">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+            <div className="p-4 border-t bg-muted/30 space-y-4">
+              {/* Theme Presets */}
+              <div>
+                <h4 className="text-sm font-semibold text-foreground flex items-center gap-2 mb-3">
                   <Palette className="h-4 w-4 text-primary" />
-                  Room Colors
+                  Color Themes
                 </h4>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setRoomColors({})}
-                  className="text-xs text-muted-foreground"
-                >
-                  Reset All
-                </Button>
+                <div className="flex flex-wrap gap-2">
+                  {presetThemes.map((theme) => (
+                    <button
+                      key={theme.name}
+                      onClick={() => applyTheme(theme)}
+                      className={`group relative flex items-center gap-2 px-3 py-2 rounded-lg border transition-all text-left ${
+                        activeTheme === theme.name
+                          ? 'border-primary bg-primary/10 ring-1 ring-primary'
+                          : 'border-input bg-background hover:border-primary/50 hover:bg-muted/50'
+                      }`}
+                    >
+                      <div className="flex -space-x-1">
+                        {['living', 'bedroom', 'kitchen'].map((type) => (
+                          <div
+                            key={type}
+                            className="w-4 h-4 rounded-full border border-background"
+                            style={{ backgroundColor: theme.colors[type]?.floor }}
+                          />
+                        ))}
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-foreground">{theme.name}</p>
+                        <p className="text-[10px] text-muted-foreground">{theme.description}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {currentFloorPlan.rooms.map((room) => (
-                  <div key={room.id} className="flex items-center gap-3 p-2 rounded-lg bg-background border">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">{room.name}</p>
-                      <p className="text-xs text-muted-foreground capitalize">{room.type}</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="text-center">
-                        <Label className="text-[10px] text-muted-foreground">Floor</Label>
-                        <input
-                          type="color"
-                          value={roomColors[room.id]?.floor || getDefaultColor(room.type, 'floor')}
-                          onChange={(e) => setRoomColors(prev => ({
-                            ...prev,
-                            [room.id]: { ...prev[room.id], floor: e.target.value }
-                          }))}
-                          className="block w-8 h-8 rounded cursor-pointer border border-input"
-                        />
+
+              {/* Per-Room Colors */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-sm font-semibold text-foreground">Custom Room Colors</h4>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => { setRoomColors({}); setActiveTheme(null); }}
+                    className="text-xs text-muted-foreground"
+                  >
+                    Reset All
+                  </Button>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {currentFloorPlan.rooms.map((room) => (
+                    <div key={room.id} className="flex items-center gap-3 p-2 rounded-lg bg-background border">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground truncate">{room.name}</p>
+                        <p className="text-xs text-muted-foreground capitalize">{room.type}</p>
                       </div>
-                      <div className="text-center">
-                        <Label className="text-[10px] text-muted-foreground">Wall</Label>
-                        <input
-                          type="color"
-                          value={roomColors[room.id]?.wall || getDefaultColor(room.type, 'wall')}
-                          onChange={(e) => setRoomColors(prev => ({
-                            ...prev,
-                            [room.id]: { ...prev[room.id], wall: e.target.value }
-                          }))}
-                          className="block w-8 h-8 rounded cursor-pointer border border-input"
-                        />
+                      <div className="flex items-center gap-2">
+                        <div className="text-center">
+                          <Label className="text-[10px] text-muted-foreground">Floor</Label>
+                          <input
+                            type="color"
+                            value={roomColors[room.id]?.floor || getDefaultColor(room.type, 'floor')}
+                            onChange={(e) => {
+                              setRoomColors(prev => ({
+                                ...prev,
+                                [room.id]: { ...prev[room.id], floor: e.target.value }
+                              }));
+                              setActiveTheme(null);
+                            }}
+                            className="block w-8 h-8 rounded cursor-pointer border border-input"
+                          />
+                        </div>
+                        <div className="text-center">
+                          <Label className="text-[10px] text-muted-foreground">Wall</Label>
+                          <input
+                            type="color"
+                            value={roomColors[room.id]?.wall || getDefaultColor(room.type, 'wall')}
+                            onChange={(e) => {
+                              setRoomColors(prev => ({
+                                ...prev,
+                                [room.id]: { ...prev[room.id], wall: e.target.value }
+                              }));
+                              setActiveTheme(null);
+                            }}
+                            className="block w-8 h-8 rounded cursor-pointer border border-input"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           )}
