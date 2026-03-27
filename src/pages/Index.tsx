@@ -1,6 +1,7 @@
 import { HeroSection } from "@/components/HeroSection";
 import { FileUploadSection } from "@/components/FileUploadSection";
 import { Viewer3D } from "@/components/Viewer3D";
+import { FAQSection } from "@/components/FAQSection";
 import { ContactSection } from "@/components/ContactSection";
 import { Footer } from "@/components/Footer";
 import { ScrollToTop } from "@/components/ScrollToTop";
