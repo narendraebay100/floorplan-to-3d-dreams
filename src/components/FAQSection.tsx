@@ -1,4 +1,5 @@
 import { HelpCircle } from "lucide-react";
+import { motion } from "framer-motion";
 import {
   Accordion,
   AccordionContent,
@@ -43,7 +44,13 @@ export const FAQSection = () => {
   return (
     <section className="py-20 bg-muted/30">
       <div className="container mx-auto px-4 max-w-3xl">
-        <div className="text-center mb-12">
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-4">
             <HelpCircle className="w-4 h-4" />
             <span className="text-sm font-medium">FAQ</span>
@@ -54,22 +61,29 @@ export const FAQSection = () => {
           <p className="text-muted-foreground text-lg">
             Everything you need to know about our floor plan to 3D model converter.
           </p>
-        </div>
+        </motion.div>
 
         <Accordion type="single" collapsible className="space-y-3">
           {faqs.map((faq, index) => (
-            <AccordionItem
+            <motion.div
               key={index}
-              value={`item-${index}`}
-              className="border border-border/50 rounded-lg px-6 bg-card shadow-sm data-[state=open]:shadow-md transition-shadow"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: index * 0.08 }}
             >
-              <AccordionTrigger className="text-left text-foreground hover:no-underline hover:text-primary transition-colors">
-                {faq.question}
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground leading-relaxed">
-                {faq.answer}
-              </AccordionContent>
-            </AccordionItem>
+              <AccordionItem
+                value={`item-${index}`}
+                className="border border-border/50 rounded-lg px-6 bg-card shadow-sm data-[state=open]:shadow-md transition-shadow"
+              >
+                <AccordionTrigger className="text-left text-foreground hover:no-underline hover:text-primary transition-colors">
+                  {faq.question}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground leading-relaxed">
+                  {faq.answer}
+                </AccordionContent>
+              </AccordionItem>
+            </motion.div>
           ))}
         </Accordion>
       </div>

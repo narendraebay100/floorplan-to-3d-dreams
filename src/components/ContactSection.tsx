@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Send, Mail, User, MessageSquare } from "lucide-react";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -52,13 +53,25 @@ export const ContactSection = () => {
   return (
     <section id="contact" className="py-20 bg-muted/30">
       <div className="max-w-3xl mx-auto px-6">
-        <div className="text-center mb-12">
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
           <h2 className="text-4xl font-bold text-foreground mb-4">Get In Touch</h2>
           <p className="text-xl text-muted-foreground max-w-xl mx-auto">
             Have a question or feedback? We'd love to hear from you.
           </p>
-        </div>
+        </motion.div>
 
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
         <Card className="p-6 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-5" noValidate>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -135,6 +148,7 @@ export const ContactSection = () => {
             </Button>
           </form>
         </Card>
+        </motion.div>
       </div>
     </section>
   );
