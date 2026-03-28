@@ -44,7 +44,13 @@ export const FAQSection = () => {
   return (
     <section className="py-20 bg-muted/30">
       <div className="container mx-auto px-4 max-w-3xl">
-        <div className="text-center mb-12">
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-4">
             <HelpCircle className="w-4 h-4" />
             <span className="text-sm font-medium">FAQ</span>
@@ -55,7 +61,7 @@ export const FAQSection = () => {
           <p className="text-muted-foreground text-lg">
             Everything you need to know about our floor plan to 3D model converter.
           </p>
-        </div>
+        </motion.div>
 
         <Accordion type="single" collapsible className="space-y-3">
           {faqs.map((faq, index) => (
