@@ -1,4 +1,5 @@
 import { HelpCircle } from "lucide-react";
+import { motion } from "framer-motion";
 import {
   Accordion,
   AccordionContent,
