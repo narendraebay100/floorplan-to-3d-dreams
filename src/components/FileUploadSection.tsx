@@ -93,7 +93,13 @@ export const FileUploadSection = () => {
   return (
     <section id="upload" className="py-20 bg-gradient-surface">
       <div className="max-w-4xl mx-auto px-6">
-        <div className="text-center mb-12">
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
           <h2 className="text-4xl font-bold text-foreground mb-4">
             Upload Your Floor Plans
           </h2>
@@ -101,7 +107,7 @@ export const FileUploadSection = () => {
             Drag and drop your architectural drawings or click to browse. 
             We support PNG, JPG, PDF, and SVG formats.
           </p>
-        </div>
+        </motion.div>
 
         {/* Upload Zone */}
         <Card className="architectural-surface p-8 mb-8">
