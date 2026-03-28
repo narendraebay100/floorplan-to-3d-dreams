@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Upload, Eye, Layers3 } from "lucide-react";
+import { motion } from "framer-motion";
 import heroImage from "@/assets/hero-architecture.jpg";
 
 export const HeroSection = () => {
@@ -17,7 +18,11 @@ export const HeroSection = () => {
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
-        <div className="animate-fade-in">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+        >
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
             Transform Your
             <span className="block bg-gradient-to-r from-white to-primary-glow bg-clip-text text-transparent">
@@ -42,27 +47,27 @@ export const HeroSection = () => {
               View Demo
             </Button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Feature highlights */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-slide-up">
-          <div className="architectural-elevation rounded-2xl p-6 backdrop-blur-sm bg-white/10 border border-white/20">
-            <Upload className="h-12 w-12 text-primary-glow mb-4 mx-auto" />
-            <h3 className="text-xl font-semibold text-white mb-2">Easy Upload</h3>
-            <p className="text-white/80">Support for PNG, JPG, PDF, and SVG formats with drag & drop interface.</p>
-          </div>
-          
-          <div className="architectural-elevation rounded-2xl p-6 backdrop-blur-sm bg-white/10 border border-white/20">
-            <Layers3 className="h-12 w-12 text-primary-glow mb-4 mx-auto" />
-            <h3 className="text-xl font-semibold text-white mb-2">3D Generation</h3>
-            <p className="text-white/80">Automatic conversion from 2D floor plans to interactive 3D models.</p>
-          </div>
-          
-          <div className="architectural-elevation rounded-2xl p-6 backdrop-blur-sm bg-white/10 border border-white/20">
-            <Eye className="h-12 w-12 text-primary-glow mb-4 mx-auto" />
-            <h3 className="text-xl font-semibold text-white mb-2">Interactive View</h3>
-            <p className="text-white/80">Navigate, measure, and explore your 3D models with professional tools.</p>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {[
+            { icon: Upload, title: "Easy Upload", desc: "Support for PNG, JPG, PDF, and SVG formats with drag & drop interface." },
+            { icon: Layers3, title: "3D Generation", desc: "Automatic conversion from 2D floor plans to interactive 3D models." },
+            { icon: Eye, title: "Interactive View", desc: "Navigate, measure, and explore your 3D models with professional tools." },
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 + i * 0.15 }}
+              className="architectural-elevation rounded-2xl p-6 backdrop-blur-sm bg-white/10 border border-white/20"
+            >
+              <item.icon className="h-12 w-12 text-primary-glow mb-4 mx-auto" />
+              <h3 className="text-xl font-semibold text-white mb-2">{item.title}</h3>
+              <p className="text-white/80">{item.desc}</p>
+            </motion.div>
+          ))}
         </div>
       </div>
 
