@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Send, Mail, User, MessageSquare } from "lucide-react";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { z } from "zod";
 
