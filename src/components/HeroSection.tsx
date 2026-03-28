@@ -79,7 +79,7 @@ export const HeroSection = () => {
             </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
