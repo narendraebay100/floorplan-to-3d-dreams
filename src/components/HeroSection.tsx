@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Upload, Eye, Layers3 } from "lucide-react";
+import { motion } from "framer-motion";
 import heroImage from "@/assets/hero-architecture.jpg";
 
 export const HeroSection = () => {
