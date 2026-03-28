@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Upload, File, X, CheckCircle, AlertCircle } from "lucide-react";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useFloorPlan } from "@/contexts/FloorPlanContext";
 
