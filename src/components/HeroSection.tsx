@@ -47,7 +47,7 @@ export const HeroSection = () => {
               View Demo
             </Button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Feature highlights */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-slide-up">
