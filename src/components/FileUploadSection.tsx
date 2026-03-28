@@ -166,6 +166,7 @@ export const FileUploadSection = () => {
             </div>
           </div>
         </Card>
+        </motion.div>
 
         {/* File Preview */}
         {files.length > 0 && (
