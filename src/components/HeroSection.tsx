@@ -1,23 +1,33 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Upload, Eye, Layers3 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import heroImage from "@/assets/hero-architecture.jpg";
 
 export const HeroSection = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0.3]);
+
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-hero">
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0">
+    <section ref={sectionRef} id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-hero">
+      {/* Background Image with Parallax */}
+      <motion.div className="absolute inset-0 z-0" style={{ y: bgY }}>
         <img 
           src={heroImage} 
           alt="3D House Visualization" 
-          className="w-full h-full object-cover opacity-20"
+          className="w-full h-[120%] object-cover opacity-20"
         />
         <div className="absolute inset-0 bg-gradient-depth" />
-      </div>
+      </motion.div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
+      <motion.div className="relative z-10 max-w-7xl mx-auto px-6 text-center" style={{ y: contentY, opacity }}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -69,7 +79,7 @@ export const HeroSection = () => {
             </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
