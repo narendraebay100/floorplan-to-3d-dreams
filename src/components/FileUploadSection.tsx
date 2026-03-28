@@ -110,6 +110,12 @@ export const FileUploadSection = () => {
         </motion.div>
 
         {/* Upload Zone */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
         <Card className="architectural-surface p-8 mb-8">
           <div
             {...getRootProps()}
