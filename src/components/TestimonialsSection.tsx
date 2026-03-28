@@ -67,33 +67,38 @@ export const TestimonialsSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {testimonials.map((t, i) => (
-            <Card
+            <motion.div
               key={i}
-              className="border-border/50 bg-card hover:shadow-lg transition-shadow duration-300"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: i * 0.1, ease: "easeOut" }}
             >
-              <CardContent className="p-6 flex flex-col gap-4">
-                <Quote className="w-8 h-8 text-primary/30" />
-                <p className="text-muted-foreground leading-relaxed flex-1">
-                  "{t.content}"
-                </p>
-                <div className="flex items-center gap-1 mt-1">
-                  {Array.from({ length: 5 }).map((_, s) => (
-                    <Star
-                      key={s}
-                      className={`w-4 h-4 ${
-                        s < t.rating
-                          ? "text-primary fill-primary"
-                          : "text-muted-foreground/30"
-                      }`}
-                    />
-                  ))}
-                </div>
-                <div>
-                  <p className="font-semibold text-foreground">{t.name}</p>
-                  <p className="text-sm text-muted-foreground">{t.role}</p>
-                </div>
-              </CardContent>
-            </Card>
+              <Card className="h-full border-border/50 bg-card hover:shadow-lg transition-shadow duration-300">
+                <CardContent className="p-6 flex flex-col gap-4 h-full">
+                  <Quote className="w-8 h-8 text-primary/30" />
+                  <p className="text-muted-foreground leading-relaxed flex-1">
+                    "{t.content}"
+                  </p>
+                  <div className="flex items-center gap-1 mt-1">
+                    {Array.from({ length: 5 }).map((_, s) => (
+                      <Star
+                        key={s}
+                        className={`w-4 h-4 ${
+                          s < t.rating
+                            ? "text-primary fill-primary"
+                            : "text-muted-foreground/30"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground">{t.name}</p>
+                    <p className="text-sm text-muted-foreground">{t.role}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
         </div>
       </div>
