@@ -148,6 +148,7 @@ export const ContactSection = () => {
             </Button>
           </form>
         </Card>
+        </motion.div>
       </div>
     </section>
   );
