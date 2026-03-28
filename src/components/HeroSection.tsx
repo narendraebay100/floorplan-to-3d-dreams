@@ -27,7 +27,7 @@ export const HeroSection = () => {
       </motion.div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
+      <motion.div className="relative z-10 max-w-7xl mx-auto px-6 text-center" style={{ y: contentY, opacity }}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
