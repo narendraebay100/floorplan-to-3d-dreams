@@ -5,17 +5,26 @@ import { useRef } from "react";
 import heroImage from "@/assets/hero-architecture.jpg";
 
 export const HeroSection = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0.3]);
+
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-hero">
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0">
+    <section ref={sectionRef} id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-hero">
+      {/* Background Image with Parallax */}
+      <motion.div className="absolute inset-0 z-0" style={{ y: bgY }}>
         <img 
           src={heroImage} 
           alt="3D House Visualization" 
-          className="w-full h-full object-cover opacity-20"
+          className="w-full h-[120%] object-cover opacity-20"
         />
         <div className="absolute inset-0 bg-gradient-depth" />
-      </div>
+      </motion.div>
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
