@@ -18,7 +18,11 @@ export const HeroSection = () => {
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
-        <div className="animate-fade-in">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+        >
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
             Transform Your
             <span className="block bg-gradient-to-r from-white to-primary-glow bg-clip-text text-transparent">
