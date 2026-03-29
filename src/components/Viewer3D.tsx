@@ -174,10 +174,11 @@ const presetThemes: ColorTheme[] = [
 ];
 
 export const Viewer3D = () => {
-  const { currentFloorPlan, isGenerating, roomColors, setRoomColors } = useFloorPlan();
+  const { currentFloorPlan, isGenerating, roomColors, setRoomColors, roomMaterials, setRoomMaterials } = useFloorPlan();
   const [showMeasurements, setShowMeasurements] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showColorPanel, setShowColorPanel] = useState(false);
+  const [showMaterialPanel, setShowMaterialPanel] = useState(false);
   const [walkthroughMode, setWalkthroughMode] = useState(false);
   const [activeTheme, setActiveTheme] = useState<string | null>(null);
 
