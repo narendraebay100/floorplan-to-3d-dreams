@@ -178,6 +178,7 @@ export const Viewer3D = () => {
   const [showMeasurements, setShowMeasurements] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showColorPanel, setShowColorPanel] = useState(false);
+  const [walkthroughMode, setWalkthroughMode] = useState(false);
   const [activeTheme, setActiveTheme] = useState<string | null>(null);
 
   const applyTheme = useCallback((theme: ColorTheme) => {
