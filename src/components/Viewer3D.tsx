@@ -323,6 +323,16 @@ export const Viewer3D = () => {
               </Toggle>
               <Toggle
                 size="sm"
+                pressed={showMaterialPanel}
+                onPressedChange={setShowMaterialPanel}
+                aria-label="Toggle material panel"
+                className="border border-input"
+              >
+                <Layers className="h-4 w-4 mr-2" />
+                Materials
+              </Toggle>
+              <Toggle
+                size="sm"
                 pressed={walkthroughMode}
                 onPressedChange={setWalkthroughMode}
                 aria-label="Toggle walkthrough mode"
