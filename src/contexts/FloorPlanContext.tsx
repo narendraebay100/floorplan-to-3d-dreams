@@ -31,6 +31,7 @@ export interface FloorPlan {
 }
 
 export type RoomColorOverrides = Record<string, { floor?: string; wall?: string }>;
+export type RoomMaterialOverridesMap = Record<string, RoomMaterialOverrides>;
 
 interface FloorPlanContextType {
   currentFloorPlan: FloorPlan | null;
