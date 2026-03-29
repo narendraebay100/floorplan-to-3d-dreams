@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import * as THREE from "three";
 import { Toggle } from "@/components/ui/toggle";
 import { Label } from "@/components/ui/label";
+import { FirstPersonControls } from "@/components/FirstPersonControls";
 import {
   DropdownMenu,
   DropdownMenuContent,
