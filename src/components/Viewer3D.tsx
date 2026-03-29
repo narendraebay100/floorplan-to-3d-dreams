@@ -523,20 +523,37 @@ export const Viewer3D = () => {
 
           {/* Info panel */}
           <div className="p-4 bg-surface-subtle border-t">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div>
-                <span className="font-medium text-foreground">Controls:</span>
-                <span className="text-muted-foreground ml-2">Click & drag to rotate</span>
+            {walkthroughMode ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div>
+                  <span className="font-medium text-foreground">Move:</span>
+                  <span className="text-muted-foreground ml-2">W/A/S/D or Arrow keys</span>
+                </div>
+                <div>
+                  <span className="font-medium text-foreground">Look:</span>
+                  <span className="text-muted-foreground ml-2">Click canvas to lock mouse, then move</span>
+                </div>
+                <div>
+                  <span className="font-medium text-foreground">Exit:</span>
+                  <span className="text-muted-foreground ml-2">Press Escape to unlock mouse</span>
+                </div>
               </div>
-              <div>
-                <span className="font-medium text-foreground">Zoom:</span>
-                <span className="text-muted-foreground ml-2">Scroll wheel or pinch</span>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div>
+                  <span className="font-medium text-foreground">Controls:</span>
+                  <span className="text-muted-foreground ml-2">Click & drag to rotate</span>
+                </div>
+                <div>
+                  <span className="font-medium text-foreground">Zoom:</span>
+                  <span className="text-muted-foreground ml-2">Scroll wheel or pinch</span>
+                </div>
+                <div>
+                  <span className="font-medium text-foreground">Pan:</span>
+                  <span className="text-muted-foreground ml-2">Right-click & drag</span>
+                </div>
               </div>
-              <div>
-                <span className="font-medium text-foreground">Pan:</span>
-                <span className="text-muted-foreground ml-2">Right-click & drag</span>
-              </div>
-            </div>
+            )}
           </div>
         </Card>
       </div>
