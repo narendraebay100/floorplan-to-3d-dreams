@@ -30,21 +30,29 @@ const SceneCapture = () => {
   return null;
 };
 
-const Scene = ({ showMeasurements }: { showMeasurements: boolean }) => {
+const Scene = ({ showMeasurements, walkthroughMode }: { showMeasurements: boolean; walkthroughMode: boolean }) => {
   return (
     <>
       <SceneCapture />
-      <PerspectiveCamera makeDefault position={[8, 6, 8]} fov={75} />
-      <OrbitControls 
-        enablePan={true}
-        enableZoom={true}
-        enableRotate={true}
-        minDistance={3}
-        maxDistance={30}
-        minPolarAngle={0}
-        maxPolarAngle={Math.PI / 2.2}
-        target={[0, 1, 0]}
-      />
+      {!walkthroughMode && (
+        <>
+          <PerspectiveCamera makeDefault position={[8, 6, 8]} fov={75} />
+          <OrbitControls 
+            enablePan={true}
+            enableZoom={true}
+            enableRotate={true}
+            minDistance={3}
+            maxDistance={30}
+            minPolarAngle={0}
+            maxPolarAngle={Math.PI / 2.2}
+            target={[0, 1, 0]}
+          />
+        </>
+      )}
+      {walkthroughMode && (
+        <PerspectiveCamera makeDefault position={[0, 1.6, 5]} fov={75} />
+      )}
+      <FirstPersonControls enabled={walkthroughMode} />
       
       {/* Enhanced Lighting */}
       <ambientLight intensity={0.6} />
