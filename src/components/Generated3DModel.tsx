@@ -1,8 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Text, Line } from '@react-three/drei';
 import * as THREE from 'three';
-import { useFloorPlan, RoomColorOverrides } from '@/contexts/FloorPlanContext';
+import { useFloorPlan, RoomColorOverrides, RoomMaterialOverrides } from '@/contexts/FloorPlanContext';
+import { createProceduralTexture, MATERIAL_LIBRARY, MaterialType } from '@/lib/materialLibrary';
 
 export const Generated3DModel = ({ showMeasurements = true }: { showMeasurements?: boolean }) => {
   const { currentFloorPlan, roomColors } = useFloorPlan();
