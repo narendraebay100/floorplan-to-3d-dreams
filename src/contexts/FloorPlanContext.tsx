@@ -41,6 +41,8 @@ interface FloorPlanContextType {
   generateFloorPlan: (files: File[]) => Promise<void>;
   roomColors: RoomColorOverrides;
   setRoomColors: React.Dispatch<React.SetStateAction<RoomColorOverrides>>;
+  roomMaterials: RoomMaterialOverridesMap;
+  setRoomMaterials: React.Dispatch<React.SetStateAction<RoomMaterialOverridesMap>>;
 }
 
 const FloorPlanContext = createContext<FloorPlanContextType | undefined>(undefined);
