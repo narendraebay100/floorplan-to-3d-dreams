@@ -3,7 +3,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera, Grid } from "@react-three/drei";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download, Camera, Ruler, Palette, Footprints } from "lucide-react";
+import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download, Camera, Ruler, Palette, Footprints, Layers } from "lucide-react";
 import { Generated3DModel } from "@/components/Generated3DModel";
 import { useFloorPlan } from "@/contexts/FloorPlanContext";
 import { exportSceneAsGLB, exportSceneAsGLTF, exportSceneAsOBJ } from "@/lib/exportScene";
@@ -12,6 +12,7 @@ import * as THREE from "three";
 import { Toggle } from "@/components/ui/toggle";
 import { Label } from "@/components/ui/label";
 import { FirstPersonControls } from "@/components/FirstPersonControls";
+import { MATERIAL_LIBRARY } from "@/lib/materialLibrary";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -174,10 +175,11 @@ const presetThemes: ColorTheme[] = [
 ];
 
 export const Viewer3D = () => {
-  const { currentFloorPlan, isGenerating, roomColors, setRoomColors } = useFloorPlan();
+  const { currentFloorPlan, isGenerating, roomColors, setRoomColors, roomMaterials, setRoomMaterials } = useFloorPlan();
   const [showMeasurements, setShowMeasurements] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showColorPanel, setShowColorPanel] = useState(false);
+  const [showMaterialPanel, setShowMaterialPanel] = useState(false);
   const [walkthroughMode, setWalkthroughMode] = useState(false);
   const [activeTheme, setActiveTheme] = useState<string | null>(null);
 
@@ -319,6 +321,16 @@ export const Viewer3D = () => {
               >
                 <Palette className="h-4 w-4 mr-2" />
                 Colors
+              </Toggle>
+              <Toggle
+                size="sm"
+                pressed={showMaterialPanel}
+                onPressedChange={setShowMaterialPanel}
+                aria-label="Toggle material panel"
+                className="border border-input"
+              >
+                <Layers className="h-4 w-4 mr-2" />
+                Materials
               </Toggle>
               <Toggle
                 size="sm"
@@ -517,6 +529,96 @@ export const Viewer3D = () => {
                     </div>
                   ))}
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* Material Library Panel */}
+          {showMaterialPanel && currentFloorPlan && (
+            <div className="p-4 border-t bg-muted/30 space-y-4">
+              <div className="flex items-center justify-between mb-1">
+                <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                  <Layers className="h-4 w-4 text-primary" />
+                  Material Library
+                </h4>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setRoomMaterials({})}
+                  className="text-xs text-muted-foreground"
+                >
+                  Reset All
+                </Button>
+              </div>
+
+              <div className="space-y-3">
+                {currentFloorPlan.rooms.map((room) => {
+                  const currentFloor = roomMaterials[room.id]?.floorMaterial || 'solid';
+                  const currentWall = roomMaterials[room.id]?.wallMaterial || 'solid';
+                  const floorOptions = MATERIAL_LIBRARY.filter(m => m.surfaces.includes('floor'));
+                  const wallOptions = MATERIAL_LIBRARY.filter(m => m.surfaces.includes('wall'));
+
+                  return (
+                    <div key={room.id} className="p-3 rounded-lg bg-background border space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-foreground">{room.name}</p>
+                          <p className="text-xs text-muted-foreground capitalize">{room.type}</p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        {/* Floor material */}
+                        <div>
+                          <Label className="text-[10px] text-muted-foreground mb-1 block">Floor Material</Label>
+                          <div className="flex flex-wrap gap-1">
+                            {floorOptions.map((mat) => (
+                              <button
+                                key={mat.id}
+                                onClick={() => setRoomMaterials(prev => ({
+                                  ...prev,
+                                  [room.id]: { ...prev[room.id], floorMaterial: mat.id }
+                                }))}
+                                title={`${mat.label} — ${mat.description}`}
+                                className={`px-2 py-1 text-[11px] rounded border transition-all ${
+                                  currentFloor === mat.id
+                                    ? 'border-primary bg-primary/10 text-primary font-medium'
+                                    : 'border-input bg-background text-muted-foreground hover:border-primary/50'
+                                }`}
+                              >
+                                {mat.emoji} {mat.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Wall material */}
+                        <div>
+                          <Label className="text-[10px] text-muted-foreground mb-1 block">Wall Material</Label>
+                          <div className="flex flex-wrap gap-1">
+                            {wallOptions.map((mat) => (
+                              <button
+                                key={mat.id}
+                                onClick={() => setRoomMaterials(prev => ({
+                                  ...prev,
+                                  [room.id]: { ...prev[room.id], wallMaterial: mat.id }
+                                }))}
+                                title={`${mat.label} — ${mat.description}`}
+                                className={`px-2 py-1 text-[11px] rounded border transition-all ${
+                                  currentWall === mat.id
+                                    ? 'border-primary bg-primary/10 text-primary font-medium'
+                                    : 'border-input bg-background text-muted-foreground hover:border-primary/50'
+                                }`}
+                              >
+                                {mat.emoji} {mat.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}

@@ -1,11 +1,12 @@
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Text, Line } from '@react-three/drei';
 import * as THREE from 'three';
-import { useFloorPlan, RoomColorOverrides } from '@/contexts/FloorPlanContext';
+import { useFloorPlan, RoomColorOverrides, RoomMaterialOverrides } from '@/contexts/FloorPlanContext';
+import { createProceduralTexture, MATERIAL_LIBRARY, MaterialType } from '@/lib/materialLibrary';
 
 export const Generated3DModel = ({ showMeasurements = true }: { showMeasurements?: boolean }) => {
-  const { currentFloorPlan, roomColors } = useFloorPlan();
+  const { currentFloorPlan, roomColors, roomMaterials } = useFloorPlan();
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
@@ -28,7 +29,7 @@ export const Generated3DModel = ({ showMeasurements = true }: { showMeasurements
       
       {/* Generate floors for each room */}
       {currentFloorPlan.rooms.map((room) => (
-        <Room3D key={room.id} room={room} scale={currentFloorPlan.scale} showMeasurements={showMeasurements} colorOverride={roomColors[room.id]} />
+        <Room3D key={room.id} room={room} scale={currentFloorPlan.scale} showMeasurements={showMeasurements} colorOverride={roomColors[room.id]} materialOverride={roomMaterials[room.id]} />
       ))}
       
       {/* Floor plan title */}
@@ -95,7 +96,7 @@ const roomTypeIcons: Record<string, string> = {
   other: '📦',
 };
 
-const Room3D = ({ room, scale, showMeasurements, colorOverride }: { room: any; scale: number; showMeasurements: boolean; colorOverride?: { floor?: string; wall?: string } }) => {
+const Room3D = ({ room, scale, showMeasurements, colorOverride, materialOverride }: { room: any; scale: number; showMeasurements: boolean; colorOverride?: { floor?: string; wall?: string }; materialOverride?: RoomMaterialOverrides }) => {
   // Convert room bounds to 3D coordinates
   const x = (room.bounds.x + room.bounds.width / 2 - 400) / scale;
   const z = (room.bounds.y + room.bounds.height / 2 - 300) / scale;
@@ -115,6 +116,15 @@ const Room3D = ({ room, scale, showMeasurements, colorOverride }: { room: any; s
   const baseMaterials = roomMaterials[room.type] || roomMaterials.other;
   const floorColor = colorOverride?.floor || baseMaterials.floor;
   const wallColor = colorOverride?.wall || baseMaterials.wall;
+
+  const floorMatType = materialOverride?.floorMaterial || 'solid';
+  const wallMatType = materialOverride?.wallMaterial || 'solid';
+
+  const floorDef = MATERIAL_LIBRARY.find(m => m.id === floorMatType) || MATERIAL_LIBRARY[0];
+  const wallDef = MATERIAL_LIBRARY.find(m => m.id === wallMatType) || MATERIAL_LIBRARY[0];
+
+  const floorTexture = useMemo(() => createProceduralTexture(floorMatType, floorColor, Math.ceil(width * 2), Math.ceil(depth * 2)), [floorMatType, floorColor, width, depth]);
+  const wallTexture = useMemo(() => createProceduralTexture(wallMatType, wallColor, 4, 2), [wallMatType, wallColor]);
   
   return (
     <>
@@ -122,9 +132,10 @@ const Room3D = ({ room, scale, showMeasurements, colorOverride }: { room: any; s
       <mesh position={[x, -0.01, z]} receiveShadow>
         <boxGeometry args={[width, 0.02, depth]} />
         <meshStandardMaterial 
-          color={floorColor} 
-          roughness={room.type === 'kitchen' || room.type === 'bathroom' ? 0.1 : 0.8}
-          metalness={room.type === 'kitchen' || room.type === 'bathroom' ? 0.2 : 0.0}
+          color={floorTexture ? '#ffffff' : floorColor}
+          map={floorTexture}
+          roughness={floorDef.roughness}
+          metalness={floorDef.metalness}
         />
       </mesh>
       
