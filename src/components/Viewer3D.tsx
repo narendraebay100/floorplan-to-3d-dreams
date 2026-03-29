@@ -3,7 +3,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera, Grid } from "@react-three/drei";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download, Camera, Ruler, Palette, ChevronDown, ChevronUp } from "lucide-react";
+import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download, Camera, Ruler, Palette, Footprints } from "lucide-react";
 import { Generated3DModel } from "@/components/Generated3DModel";
 import { useFloorPlan } from "@/contexts/FloorPlanContext";
 import { exportSceneAsGLB, exportSceneAsGLTF, exportSceneAsOBJ } from "@/lib/exportScene";
@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import * as THREE from "three";
 import { Toggle } from "@/components/ui/toggle";
 import { Label } from "@/components/ui/label";
+import { FirstPersonControls } from "@/components/FirstPersonControls";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,21 +30,29 @@ const SceneCapture = () => {
   return null;
 };
 
-const Scene = ({ showMeasurements }: { showMeasurements: boolean }) => {
+const Scene = ({ showMeasurements, walkthroughMode }: { showMeasurements: boolean; walkthroughMode: boolean }) => {
   return (
     <>
       <SceneCapture />
-      <PerspectiveCamera makeDefault position={[8, 6, 8]} fov={75} />
-      <OrbitControls 
-        enablePan={true}
-        enableZoom={true}
-        enableRotate={true}
-        minDistance={3}
-        maxDistance={30}
-        minPolarAngle={0}
-        maxPolarAngle={Math.PI / 2.2}
-        target={[0, 1, 0]}
-      />
+      {!walkthroughMode && (
+        <>
+          <PerspectiveCamera makeDefault position={[8, 6, 8]} fov={75} />
+          <OrbitControls 
+            enablePan={true}
+            enableZoom={true}
+            enableRotate={true}
+            minDistance={3}
+            maxDistance={30}
+            minPolarAngle={0}
+            maxPolarAngle={Math.PI / 2.2}
+            target={[0, 1, 0]}
+          />
+        </>
+      )}
+      {walkthroughMode && (
+        <PerspectiveCamera makeDefault position={[0, 1.6, 5]} fov={75} />
+      )}
+      <FirstPersonControls enabled={walkthroughMode} />
       
       {/* Enhanced Lighting */}
       <ambientLight intensity={0.6} />
@@ -169,6 +178,7 @@ export const Viewer3D = () => {
   const [showMeasurements, setShowMeasurements] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showColorPanel, setShowColorPanel] = useState(false);
+  const [walkthroughMode, setWalkthroughMode] = useState(false);
   const [activeTheme, setActiveTheme] = useState<string | null>(null);
 
   const applyTheme = useCallback((theme: ColorTheme) => {
@@ -310,6 +320,16 @@ export const Viewer3D = () => {
                 <Palette className="h-4 w-4 mr-2" />
                 Colors
               </Toggle>
+              <Toggle
+                size="sm"
+                pressed={walkthroughMode}
+                onPressedChange={setWalkthroughMode}
+                aria-label="Toggle walkthrough mode"
+                className="border border-input"
+              >
+                <Footprints className="h-4 w-4 mr-2" />
+                Walkthrough
+              </Toggle>
               <Button variant="outline" size="sm" onClick={handleScreenshot}>
                 <Camera className="h-4 w-4 mr-2" />
                 Screenshot
@@ -399,7 +419,7 @@ export const Viewer3D = () => {
               style={{ opacity: isGenerating ? 0.15 : 1, transition: 'opacity 0.5s ease' }}
             >
               <Suspense fallback={null}>
-                <Scene showMeasurements={showMeasurements} />
+                <Scene showMeasurements={showMeasurements} walkthroughMode={walkthroughMode} />
               </Suspense>
             </Canvas>
           </div>
@@ -503,20 +523,37 @@ export const Viewer3D = () => {
 
           {/* Info panel */}
           <div className="p-4 bg-surface-subtle border-t">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div>
-                <span className="font-medium text-foreground">Controls:</span>
-                <span className="text-muted-foreground ml-2">Click & drag to rotate</span>
+            {walkthroughMode ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div>
+                  <span className="font-medium text-foreground">Move:</span>
+                  <span className="text-muted-foreground ml-2">W/A/S/D or Arrow keys</span>
+                </div>
+                <div>
+                  <span className="font-medium text-foreground">Look:</span>
+                  <span className="text-muted-foreground ml-2">Click canvas to lock mouse, then move</span>
+                </div>
+                <div>
+                  <span className="font-medium text-foreground">Exit:</span>
+                  <span className="text-muted-foreground ml-2">Press Escape to unlock mouse</span>
+                </div>
               </div>
-              <div>
-                <span className="font-medium text-foreground">Zoom:</span>
-                <span className="text-muted-foreground ml-2">Scroll wheel or pinch</span>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div>
+                  <span className="font-medium text-foreground">Controls:</span>
+                  <span className="text-muted-foreground ml-2">Click & drag to rotate</span>
+                </div>
+                <div>
+                  <span className="font-medium text-foreground">Zoom:</span>
+                  <span className="text-muted-foreground ml-2">Scroll wheel or pinch</span>
+                </div>
+                <div>
+                  <span className="font-medium text-foreground">Pan:</span>
+                  <span className="text-muted-foreground ml-2">Right-click & drag</span>
+                </div>
               </div>
-              <div>
-                <span className="font-medium text-foreground">Pan:</span>
-                <span className="text-muted-foreground ml-2">Right-click & drag</span>
-              </div>
-            </div>
+            )}
           </div>
         </Card>
       </div>
