@@ -59,6 +59,7 @@ export const FloorPlanProvider = ({ children }: { children: ReactNode }) => {
   const [currentFloorPlan, setCurrentFloorPlan] = useState<FloorPlan | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [roomColors, setRoomColors] = useState<RoomColorOverrides>({});
+  const [roomMaterials, setRoomMaterials] = useState<RoomMaterialOverridesMap>({});
 
   const generateFloorPlan = async (files: File[]): Promise<void> => {
     if (files.length === 0) return;
