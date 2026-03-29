@@ -6,6 +6,7 @@ export interface RoomMaterialOverrides {
   wallMaterial?: MaterialType;
 }
 
+export interface Room {
   id: string;
   name: string;
   type: 'living' | 'bedroom' | 'kitchen' | 'bathroom' | 'hallway' | 'other';
