@@ -532,6 +532,96 @@ export const Viewer3D = () => {
             </div>
           )}
 
+          {/* Material Library Panel */}
+          {showMaterialPanel && currentFloorPlan && (
+            <div className="p-4 border-t bg-muted/30 space-y-4">
+              <div className="flex items-center justify-between mb-1">
+                <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                  <Layers className="h-4 w-4 text-primary" />
+                  Material Library
+                </h4>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setRoomMaterials({})}
+                  className="text-xs text-muted-foreground"
+                >
+                  Reset All
+                </Button>
+              </div>
+
+              <div className="space-y-3">
+                {currentFloorPlan.rooms.map((room) => {
+                  const currentFloor = roomMaterials[room.id]?.floorMaterial || 'solid';
+                  const currentWall = roomMaterials[room.id]?.wallMaterial || 'solid';
+                  const floorOptions = MATERIAL_LIBRARY.filter(m => m.surfaces.includes('floor'));
+                  const wallOptions = MATERIAL_LIBRARY.filter(m => m.surfaces.includes('wall'));
+
+                  return (
+                    <div key={room.id} className="p-3 rounded-lg bg-background border space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-foreground">{room.name}</p>
+                          <p className="text-xs text-muted-foreground capitalize">{room.type}</p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        {/* Floor material */}
+                        <div>
+                          <Label className="text-[10px] text-muted-foreground mb-1 block">Floor Material</Label>
+                          <div className="flex flex-wrap gap-1">
+                            {floorOptions.map((mat) => (
+                              <button
+                                key={mat.id}
+                                onClick={() => setRoomMaterials(prev => ({
+                                  ...prev,
+                                  [room.id]: { ...prev[room.id], floorMaterial: mat.id }
+                                }))}
+                                title={`${mat.label} — ${mat.description}`}
+                                className={`px-2 py-1 text-[11px] rounded border transition-all ${
+                                  currentFloor === mat.id
+                                    ? 'border-primary bg-primary/10 text-primary font-medium'
+                                    : 'border-input bg-background text-muted-foreground hover:border-primary/50'
+                                }`}
+                              >
+                                {mat.emoji} {mat.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Wall material */}
+                        <div>
+                          <Label className="text-[10px] text-muted-foreground mb-1 block">Wall Material</Label>
+                          <div className="flex flex-wrap gap-1">
+                            {wallOptions.map((mat) => (
+                              <button
+                                key={mat.id}
+                                onClick={() => setRoomMaterials(prev => ({
+                                  ...prev,
+                                  [room.id]: { ...prev[room.id], wallMaterial: mat.id }
+                                }))}
+                                title={`${mat.label} — ${mat.description}`}
+                                className={`px-2 py-1 text-[11px] rounded border transition-all ${
+                                  currentWall === mat.id
+                                    ? 'border-primary bg-primary/10 text-primary font-medium'
+                                    : 'border-input bg-background text-muted-foreground hover:border-primary/50'
+                                }`}
+                              >
+                                {mat.emoji} {mat.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Info panel */}
           <div className="p-4 bg-surface-subtle border-t">
             {walkthroughMode ? (
