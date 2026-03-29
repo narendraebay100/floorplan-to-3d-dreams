@@ -320,6 +320,16 @@ export const Viewer3D = () => {
                 <Palette className="h-4 w-4 mr-2" />
                 Colors
               </Toggle>
+              <Toggle
+                size="sm"
+                pressed={walkthroughMode}
+                onPressedChange={setWalkthroughMode}
+                aria-label="Toggle walkthrough mode"
+                className="border border-input"
+              >
+                <Footprints className="h-4 w-4 mr-2" />
+                Walkthrough
+              </Toggle>
               <Button variant="outline" size="sm" onClick={handleScreenshot}>
                 <Camera className="h-4 w-4 mr-2" />
                 Screenshot
