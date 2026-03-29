@@ -409,7 +409,7 @@ export const Viewer3D = () => {
               style={{ opacity: isGenerating ? 0.15 : 1, transition: 'opacity 0.5s ease' }}
             >
               <Suspense fallback={null}>
-                <Scene showMeasurements={showMeasurements} />
+                <Scene showMeasurements={showMeasurements} walkthroughMode={walkthroughMode} />
               </Suspense>
             </Canvas>
           </div>
