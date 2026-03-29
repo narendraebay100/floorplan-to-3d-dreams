@@ -6,7 +6,7 @@ import { useFloorPlan, RoomColorOverrides, RoomMaterialOverrides } from '@/conte
 import { createProceduralTexture, MATERIAL_LIBRARY, MaterialType } from '@/lib/materialLibrary';
 
 export const Generated3DModel = ({ showMeasurements = true }: { showMeasurements?: boolean }) => {
-  const { currentFloorPlan, roomColors } = useFloorPlan();
+  const { currentFloorPlan, roomColors, roomMaterials } = useFloorPlan();
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
