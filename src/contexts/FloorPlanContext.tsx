@@ -1,6 +1,11 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import type { MaterialType } from '@/lib/materialLibrary';
 
-export interface Room {
+export interface RoomMaterialOverrides {
+  floorMaterial?: MaterialType;
+  wallMaterial?: MaterialType;
+}
+
   id: string;
   name: string;
   type: 'living' | 'bedroom' | 'kitchen' | 'bathroom' | 'hallway' | 'other';
