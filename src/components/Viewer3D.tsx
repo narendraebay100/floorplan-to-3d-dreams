@@ -3,7 +3,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera, Grid } from "@react-three/drei";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download, Camera, Ruler, Palette, Footprints } from "lucide-react";
+import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download, Camera, Ruler, Palette, Footprints, Layers } from "lucide-react";
 import { Generated3DModel } from "@/components/Generated3DModel";
 import { useFloorPlan } from "@/contexts/FloorPlanContext";
 import { exportSceneAsGLB, exportSceneAsGLTF, exportSceneAsOBJ } from "@/lib/exportScene";
