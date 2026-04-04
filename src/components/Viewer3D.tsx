@@ -3,7 +3,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera, Grid } from "@react-three/drei";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download, Camera, Ruler, Palette, Footprints, Layers } from "lucide-react";
+import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download, Camera, Ruler, Palette, Footprints, Layers, Armchair } from "lucide-react";
 import { Generated3DModel } from "@/components/Generated3DModel";
 import { useFloorPlan } from "@/contexts/FloorPlanContext";
 import { exportSceneAsGLB, exportSceneAsGLTF, exportSceneAsOBJ } from "@/lib/exportScene";
@@ -13,6 +13,9 @@ import { Toggle } from "@/components/ui/toggle";
 import { Label } from "@/components/ui/label";
 import { FirstPersonControls } from "@/components/FirstPersonControls";
 import { MATERIAL_LIBRARY } from "@/lib/materialLibrary";
+import { FurnitureCatalogSidebar } from "@/components/FurnitureCatalogSidebar";
+import { PlacedFurniture3D } from "@/components/PlacedFurniture3D";
+import { FURNITURE_CATALOG, type PlacedFurniture } from "@/lib/furnitureCatalog";
 import {
   DropdownMenu,
   DropdownMenuContent,
