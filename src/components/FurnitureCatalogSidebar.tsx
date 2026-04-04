@@ -11,6 +11,7 @@ interface FurnitureCatalogSidebarProps {
   onAddFurniture: (itemId: string) => void;
   onRemoveFurniture: (instanceId: string) => void;
   onRotateFurniture: (instanceId: string) => void;
+  onLoadFurniture: (items: PlacedFurniture[]) => void;
   onClearAll: () => void;
   collapsed: boolean;
   onToggleCollapse: () => void;
