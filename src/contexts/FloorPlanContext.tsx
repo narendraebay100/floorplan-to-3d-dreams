@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import type { MaterialType } from '@/lib/materialLibrary';
+import type { PlacedFurniture } from '@/lib/furnitureCatalog';
 
 export interface RoomMaterialOverrides {
   floorMaterial?: MaterialType;
@@ -44,6 +45,8 @@ interface FloorPlanContextType {
   setRoomColors: React.Dispatch<React.SetStateAction<RoomColorOverrides>>;
   roomMaterials: RoomMaterialOverridesMap;
   setRoomMaterials: React.Dispatch<React.SetStateAction<RoomMaterialOverridesMap>>;
+  placedFurniture: PlacedFurniture[];
+  setPlacedFurniture: React.Dispatch<React.SetStateAction<PlacedFurniture[]>>;
 }
 
 const FloorPlanContext = createContext<FloorPlanContextType | undefined>(undefined);
@@ -61,6 +64,7 @@ export const FloorPlanProvider = ({ children }: { children: ReactNode }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [roomColors, setRoomColors] = useState<RoomColorOverrides>({});
   const [roomMaterials, setRoomMaterials] = useState<RoomMaterialOverridesMap>({});
+  const [placedFurniture, setPlacedFurniture] = useState<PlacedFurniture[]>([]);
 
   const generateFloorPlan = async (files: File[]): Promise<void> => {
     if (files.length === 0) return;
@@ -108,7 +112,9 @@ export const FloorPlanProvider = ({ children }: { children: ReactNode }) => {
       roomColors,
       setRoomColors,
       roomMaterials,
-      setRoomMaterials
+      setRoomMaterials,
+      placedFurniture,
+      setPlacedFurniture
     }}>
       {children}
     </FloorPlanContext.Provider>

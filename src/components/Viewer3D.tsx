@@ -3,7 +3,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera, Grid } from "@react-three/drei";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download, Camera, Ruler, Palette, Footprints, Layers } from "lucide-react";
+import { RotateCcw, ZoomIn, ZoomOut, Maximize, Download, Camera, Ruler, Palette, Footprints, Layers, Armchair } from "lucide-react";
 import { Generated3DModel } from "@/components/Generated3DModel";
 import { useFloorPlan } from "@/contexts/FloorPlanContext";
 import { exportSceneAsGLB, exportSceneAsGLTF, exportSceneAsOBJ } from "@/lib/exportScene";
@@ -13,6 +13,9 @@ import { Toggle } from "@/components/ui/toggle";
 import { Label } from "@/components/ui/label";
 import { FirstPersonControls } from "@/components/FirstPersonControls";
 import { MATERIAL_LIBRARY } from "@/lib/materialLibrary";
+import { FurnitureCatalogSidebar } from "@/components/FurnitureCatalogSidebar";
+import { PlacedFurniture3D } from "@/components/PlacedFurniture3D";
+import { FURNITURE_CATALOG, type PlacedFurniture } from "@/lib/furnitureCatalog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,7 +34,7 @@ const SceneCapture = () => {
   return null;
 };
 
-const Scene = ({ showMeasurements, walkthroughMode }: { showMeasurements: boolean; walkthroughMode: boolean }) => {
+const Scene = ({ showMeasurements, walkthroughMode, placedFurniture, onUpdateFurniturePosition, selectedFurnitureId, onSelectFurniture }: { showMeasurements: boolean; walkthroughMode: boolean; placedFurniture: PlacedFurniture[]; onUpdateFurniturePosition: (id: string, pos: [number, number, number]) => void; selectedFurnitureId: string | null; onSelectFurniture: (id: string | null) => void }) => {
   return (
     <>
       <SceneCapture />
@@ -89,6 +92,12 @@ const Scene = ({ showMeasurements, walkthroughMode }: { showMeasurements: boolea
       />
       
       <Generated3DModel showMeasurements={showMeasurements} />
+      <PlacedFurniture3D
+        items={placedFurniture}
+        onUpdatePosition={onUpdateFurniturePosition}
+        selectedId={selectedFurnitureId}
+        onSelect={onSelectFurniture}
+      />
     </>
   );
 };
@@ -175,13 +184,46 @@ const presetThemes: ColorTheme[] = [
 ];
 
 export const Viewer3D = () => {
-  const { currentFloorPlan, isGenerating, roomColors, setRoomColors, roomMaterials, setRoomMaterials } = useFloorPlan();
+  const { currentFloorPlan, isGenerating, roomColors, setRoomColors, roomMaterials, setRoomMaterials, placedFurniture, setPlacedFurniture } = useFloorPlan();
   const [showMeasurements, setShowMeasurements] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showColorPanel, setShowColorPanel] = useState(false);
   const [showMaterialPanel, setShowMaterialPanel] = useState(false);
   const [walkthroughMode, setWalkthroughMode] = useState(false);
   const [activeTheme, setActiveTheme] = useState<string | null>(null);
+  const [showFurnitureSidebar, setShowFurnitureSidebar] = useState(false);
+  const [selectedFurnitureId, setSelectedFurnitureId] = useState<string | null>(null);
+
+  const handleAddFurniture = useCallback((itemId: string) => {
+    const item = FURNITURE_CATALOG.find(i => i.id === itemId);
+    if (!item) return;
+    const newPlaced: PlacedFurniture = {
+      instanceId: `${itemId}-${Date.now()}`,
+      itemId,
+      position: [0, item.dimensions.height / 2, 0],
+      rotation: 0,
+    };
+    setPlacedFurniture(prev => [...prev, newPlaced]);
+    setSelectedFurnitureId(newPlaced.instanceId);
+    toast.success(`Added ${item.name} — drag it to position`);
+  }, [setPlacedFurniture]);
+
+  const handleRemoveFurniture = useCallback((instanceId: string) => {
+    setPlacedFurniture(prev => prev.filter(p => p.instanceId !== instanceId));
+    if (selectedFurnitureId === instanceId) setSelectedFurnitureId(null);
+  }, [setPlacedFurniture, selectedFurnitureId]);
+
+  const handleRotateFurniture = useCallback((instanceId: string) => {
+    setPlacedFurniture(prev => prev.map(p =>
+      p.instanceId === instanceId ? { ...p, rotation: p.rotation + Math.PI / 4 } : p
+    ));
+  }, [setPlacedFurniture]);
+
+  const handleUpdateFurniturePosition = useCallback((instanceId: string, position: [number, number, number]) => {
+    setPlacedFurniture(prev => prev.map(p =>
+      p.instanceId === instanceId ? { ...p, position } : p
+    ));
+  }, [setPlacedFurniture]);
 
   const applyTheme = useCallback((theme: ColorTheme) => {
     if (!currentFloorPlan) return;
@@ -342,6 +384,16 @@ export const Viewer3D = () => {
                 <Footprints className="h-4 w-4 mr-2" />
                 Walkthrough
               </Toggle>
+              <Toggle
+                size="sm"
+                pressed={showFurnitureSidebar}
+                onPressedChange={setShowFurnitureSidebar}
+                aria-label="Toggle furniture catalog"
+                className="border border-input"
+              >
+                <Armchair className="h-4 w-4 mr-2" />
+                Furniture
+              </Toggle>
               <Button variant="outline" size="sm" onClick={handleScreenshot}>
                 <Camera className="h-4 w-4 mr-2" />
                 Screenshot
@@ -375,6 +427,17 @@ export const Viewer3D = () => {
 
           {/* 3D Canvas */}
           <div className="h-[600px] relative bg-muted/30">
+            {showFurnitureSidebar && (
+              <FurnitureCatalogSidebar
+                placedFurniture={placedFurniture}
+                onAddFurniture={handleAddFurniture}
+                onRemoveFurniture={handleRemoveFurniture}
+                onRotateFurniture={handleRotateFurniture}
+                onClearAll={() => { setPlacedFurniture([]); setSelectedFurnitureId(null); }}
+                collapsed={false}
+                onToggleCollapse={() => setShowFurnitureSidebar(false)}
+              />
+            )}
             {isGenerating ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
                 {/* Skeleton layout */}
@@ -431,7 +494,7 @@ export const Viewer3D = () => {
               style={{ opacity: isGenerating ? 0.15 : 1, transition: 'opacity 0.5s ease' }}
             >
               <Suspense fallback={null}>
-                <Scene showMeasurements={showMeasurements} walkthroughMode={walkthroughMode} />
+                <Scene showMeasurements={showMeasurements} walkthroughMode={walkthroughMode} placedFurniture={placedFurniture} onUpdateFurniturePosition={handleUpdateFurniturePosition} selectedFurnitureId={selectedFurnitureId} onSelectFurniture={setSelectedFurnitureId} />
               </Suspense>
             </Canvas>
           </div>
