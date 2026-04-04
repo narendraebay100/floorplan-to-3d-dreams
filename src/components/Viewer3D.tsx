@@ -384,6 +384,16 @@ export const Viewer3D = () => {
                 <Footprints className="h-4 w-4 mr-2" />
                 Walkthrough
               </Toggle>
+              <Toggle
+                size="sm"
+                pressed={showFurnitureSidebar}
+                onPressedChange={setShowFurnitureSidebar}
+                aria-label="Toggle furniture catalog"
+                className="border border-input"
+              >
+                <Armchair className="h-4 w-4 mr-2" />
+                Furniture
+              </Toggle>
               <Button variant="outline" size="sm" onClick={handleScreenshot}>
                 <Camera className="h-4 w-4 mr-2" />
                 Screenshot
