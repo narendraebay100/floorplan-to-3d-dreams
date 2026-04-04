@@ -99,6 +99,154 @@ export const FurnitureCatalogSidebar = ({
         </div>
       </ScrollArea>
 
+      {/* Save/Load buttons */}
+      <div className="border-t px-3 py-2 flex gap-1">
+        <Button
+          variant="outline"
+          size="sm"
+          className="flex-1 h-7 text-[11px]"
+          onClick={() => { setShowSaveDialog(true); setLayoutName(''); }}
+          disabled={placedFurniture.length === 0}
+        >
+          <Save className="h-3 w-3 mr-1" /> Save
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="flex-1 h-7 text-[11px]"
+          onClick={() => { setSavedLayouts(getSavedLayouts()); setShowLoadDialog(true); }}
+        >
+          <FolderOpen className="h-3 w-3 mr-1" /> Load
+        </Button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".json"
+          className="hidden"
+          onChange={async (e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            try {
+              const layout = await importLayoutFromJSON(file);
+              onLoadFurniture(layout.furniture);
+              setSavedLayouts(getSavedLayouts());
+              toast.success(`Imported "${layout.name}"`);
+            } catch {
+              toast.error('Invalid layout file');
+            }
+            e.target.value = '';
+          }}
+        />
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-7 text-[11px] px-2"
+          onClick={() => fileInputRef.current?.click()}
+          title="Import layout from file"
+        >
+          <Upload className="h-3 w-3" />
+        </Button>
+      </div>
+
+      {/* Save dialog */}
+      {showSaveDialog && (
+        <div className="border-t p-3 space-y-2">
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] font-medium text-foreground">Save Layout</p>
+            <button onClick={() => setShowSaveDialog(false)} className="text-muted-foreground hover:text-foreground">
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+          <input
+            type="text"
+            value={layoutName}
+            onChange={e => setLayoutName(e.target.value)}
+            placeholder="Layout name…"
+            className="w-full text-xs px-2 py-1.5 rounded border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+            onKeyDown={e => {
+              if (e.key === 'Enter' && layoutName.trim()) {
+                saveLayout(layoutName.trim(), placedFurniture);
+                setSavedLayouts(getSavedLayouts());
+                setShowSaveDialog(false);
+                toast.success(`Layout "${layoutName.trim()}" saved`);
+              }
+            }}
+          />
+          <Button
+            size="sm"
+            className="w-full h-7 text-[11px]"
+            disabled={!layoutName.trim()}
+            onClick={() => {
+              saveLayout(layoutName.trim(), placedFurniture);
+              setSavedLayouts(getSavedLayouts());
+              setShowSaveDialog(false);
+              toast.success(`Layout "${layoutName.trim()}" saved`);
+            }}
+          >
+            Save Layout
+          </Button>
+        </div>
+      )}
+
+      {/* Load dialog */}
+      {showLoadDialog && (
+        <div className="border-t p-3 space-y-2">
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] font-medium text-foreground">Saved Layouts</p>
+            <button onClick={() => setShowLoadDialog(false)} className="text-muted-foreground hover:text-foreground">
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+          {savedLayouts.length === 0 ? (
+            <p className="text-[10px] text-muted-foreground text-center py-2">No saved layouts yet</p>
+          ) : (
+            <ScrollArea className="max-h-48">
+              <div className="space-y-1">
+                {savedLayouts.map(layout => (
+                  <div key={layout.id} className="flex items-center gap-1 p-1.5 rounded bg-muted/50 text-xs">
+                    <div className="flex-1 min-w-0">
+                      <p className="truncate text-foreground font-medium">{layout.name}</p>
+                      <p className="text-[10px] text-muted-foreground">
+                        {layout.furniture.length} items · {new Date(layout.savedAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        onLoadFurniture(layout.furniture);
+                        setShowLoadDialog(false);
+                        toast.success(`Loaded "${layout.name}"`);
+                      }}
+                      className="p-1 hover:bg-background rounded text-primary"
+                      title="Load"
+                    >
+                      <FolderOpen className="h-3 w-3" />
+                    </button>
+                    <button
+                      onClick={() => exportLayoutAsJSON(layout)}
+                      className="p-1 hover:bg-background rounded text-muted-foreground hover:text-foreground"
+                      title="Export as JSON"
+                    >
+                      <Download className="h-3 w-3" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        deleteLayout(layout.id);
+                        setSavedLayouts(getSavedLayouts());
+                        toast.success('Layout deleted');
+                      }}
+                      className="p-1 hover:bg-background rounded text-destructive/70 hover:text-destructive"
+                      title="Delete"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          )}
+        </div>
+      )}
+
       {/* Placed items */}
       {placedFurniture.length > 0 && (
         <div className="border-t">
