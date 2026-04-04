@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import type { MaterialType } from '@/lib/materialLibrary';
+import type { PlacedFurniture } from '@/lib/furnitureCatalog';
 
 export interface RoomMaterialOverrides {
   floorMaterial?: MaterialType;
