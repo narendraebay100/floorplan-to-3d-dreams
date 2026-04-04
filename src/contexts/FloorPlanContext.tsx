@@ -45,6 +45,8 @@ interface FloorPlanContextType {
   setRoomColors: React.Dispatch<React.SetStateAction<RoomColorOverrides>>;
   roomMaterials: RoomMaterialOverridesMap;
   setRoomMaterials: React.Dispatch<React.SetStateAction<RoomMaterialOverridesMap>>;
+  placedFurniture: PlacedFurniture[];
+  setPlacedFurniture: React.Dispatch<React.SetStateAction<PlacedFurniture[]>>;
 }
 
 const FloorPlanContext = createContext<FloorPlanContextType | undefined>(undefined);
