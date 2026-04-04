@@ -112,7 +112,9 @@ export const FloorPlanProvider = ({ children }: { children: ReactNode }) => {
       roomColors,
       setRoomColors,
       roomMaterials,
-      setRoomMaterials
+      setRoomMaterials,
+      placedFurniture,
+      setPlacedFurniture
     }}>
       {children}
     </FloorPlanContext.Provider>
