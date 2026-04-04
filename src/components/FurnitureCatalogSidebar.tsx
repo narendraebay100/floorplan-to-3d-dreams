@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { FURNITURE_CATALOG, FURNITURE_CATEGORIES, type PlacedFurniture } from '@/lib/furnitureCatalog';
+import { getSavedLayouts, saveLayout, deleteLayout, exportLayoutAsJSON, importLayoutFromJSON, type SavedLayout } from '@/lib/furnitureLayouts';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Trash2, RotateCw, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { Trash2, RotateCw, ChevronLeft, ChevronRight, Plus, Save, FolderOpen, Download, Upload, X } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface FurnitureCatalogSidebarProps {
   placedFurniture: PlacedFurniture[];
