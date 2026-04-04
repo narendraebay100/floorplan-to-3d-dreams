@@ -427,6 +427,17 @@ export const Viewer3D = () => {
 
           {/* 3D Canvas */}
           <div className="h-[600px] relative bg-muted/30">
+            {showFurnitureSidebar && (
+              <FurnitureCatalogSidebar
+                placedFurniture={placedFurniture}
+                onAddFurniture={handleAddFurniture}
+                onRemoveFurniture={handleRemoveFurniture}
+                onRotateFurniture={handleRotateFurniture}
+                onClearAll={() => { setPlacedFurniture([]); setSelectedFurnitureId(null); }}
+                collapsed={false}
+                onToggleCollapse={() => setShowFurnitureSidebar(false)}
+              />
+            )}
             {isGenerating ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
                 {/* Skeleton layout */}
