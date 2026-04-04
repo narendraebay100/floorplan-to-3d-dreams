@@ -433,6 +433,7 @@ export const Viewer3D = () => {
                 onAddFurniture={handleAddFurniture}
                 onRemoveFurniture={handleRemoveFurniture}
                 onRotateFurniture={handleRotateFurniture}
+                onLoadFurniture={(items) => { setPlacedFurniture(items); setSelectedFurnitureId(null); }}
                 onClearAll={() => { setPlacedFurniture([]); setSelectedFurnitureId(null); }}
                 collapsed={false}
                 onToggleCollapse={() => setShowFurnitureSidebar(false)}

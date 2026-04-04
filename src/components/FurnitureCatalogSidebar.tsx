@@ -22,11 +22,17 @@ export const FurnitureCatalogSidebar = ({
   onAddFurniture,
   onRemoveFurniture,
   onRotateFurniture,
+  onLoadFurniture,
   onClearAll,
   collapsed,
   onToggleCollapse,
 }: FurnitureCatalogSidebarProps) => {
   const [activeCategory, setActiveCategory] = useState<string>('seating');
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [showLoadDialog, setShowLoadDialog] = useState(false);
+  const [layoutName, setLayoutName] = useState('');
+  const [savedLayouts, setSavedLayouts] = useState<SavedLayout[]>(() => getSavedLayouts());
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const filteredItems = FURNITURE_CATALOG.filter(i => i.category === activeCategory);
 
