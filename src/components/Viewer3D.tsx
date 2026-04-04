@@ -184,13 +184,46 @@ const presetThemes: ColorTheme[] = [
 ];
 
 export const Viewer3D = () => {
-  const { currentFloorPlan, isGenerating, roomColors, setRoomColors, roomMaterials, setRoomMaterials } = useFloorPlan();
+  const { currentFloorPlan, isGenerating, roomColors, setRoomColors, roomMaterials, setRoomMaterials, placedFurniture, setPlacedFurniture } = useFloorPlan();
   const [showMeasurements, setShowMeasurements] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showColorPanel, setShowColorPanel] = useState(false);
   const [showMaterialPanel, setShowMaterialPanel] = useState(false);
   const [walkthroughMode, setWalkthroughMode] = useState(false);
   const [activeTheme, setActiveTheme] = useState<string | null>(null);
+  const [showFurnitureSidebar, setShowFurnitureSidebar] = useState(false);
+  const [selectedFurnitureId, setSelectedFurnitureId] = useState<string | null>(null);
+
+  const handleAddFurniture = useCallback((itemId: string) => {
+    const item = FURNITURE_CATALOG.find(i => i.id === itemId);
+    if (!item) return;
+    const newPlaced: PlacedFurniture = {
+      instanceId: `${itemId}-${Date.now()}`,
+      itemId,
+      position: [0, item.dimensions.height / 2, 0],
+      rotation: 0,
+    };
+    setPlacedFurniture(prev => [...prev, newPlaced]);
+    setSelectedFurnitureId(newPlaced.instanceId);
+    toast.success(`Added ${item.name} — drag it to position`);
+  }, [setPlacedFurniture]);
+
+  const handleRemoveFurniture = useCallback((instanceId: string) => {
+    setPlacedFurniture(prev => prev.filter(p => p.instanceId !== instanceId));
+    if (selectedFurnitureId === instanceId) setSelectedFurnitureId(null);
+  }, [setPlacedFurniture, selectedFurnitureId]);
+
+  const handleRotateFurniture = useCallback((instanceId: string) => {
+    setPlacedFurniture(prev => prev.map(p =>
+      p.instanceId === instanceId ? { ...p, rotation: p.rotation + Math.PI / 4 } : p
+    ));
+  }, [setPlacedFurniture]);
+
+  const handleUpdateFurniturePosition = useCallback((instanceId: string, position: [number, number, number]) => {
+    setPlacedFurniture(prev => prev.map(p =>
+      p.instanceId === instanceId ? { ...p, position } : p
+    ));
+  }, [setPlacedFurniture]);
 
   const applyTheme = useCallback((theme: ColorTheme) => {
     if (!currentFloorPlan) return;
