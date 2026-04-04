@@ -34,7 +34,7 @@ const SceneCapture = () => {
   return null;
 };
 
-const Scene = ({ showMeasurements, walkthroughMode }: { showMeasurements: boolean; walkthroughMode: boolean }) => {
+const Scene = ({ showMeasurements, walkthroughMode, placedFurniture, onUpdateFurniturePosition, selectedFurnitureId, onSelectFurniture }: { showMeasurements: boolean; walkthroughMode: boolean; placedFurniture: PlacedFurniture[]; onUpdateFurniturePosition: (id: string, pos: [number, number, number]) => void; selectedFurnitureId: string | null; onSelectFurniture: (id: string | null) => void }) => {
   return (
     <>
       <SceneCapture />
@@ -92,6 +92,12 @@ const Scene = ({ showMeasurements, walkthroughMode }: { showMeasurements: boolea
       />
       
       <Generated3DModel showMeasurements={showMeasurements} />
+      <PlacedFurniture3D
+        items={placedFurniture}
+        onUpdatePosition={onUpdateFurniturePosition}
+        selectedId={selectedFurnitureId}
+        onSelect={onSelectFurniture}
+      />
     </>
   );
 };
